@@ -31,15 +31,25 @@ not from what the agents reported. Five runs per condition.
 
 35 runs. `mutate.mjs` produced every detection score.
 
-| Model | Condition | Tests (mean) | Change | Seams removed | Detection |
-| --- | --- | --- | --- | --- | --- |
-| Opus | no skill | 20.8 | | 4/5 | 12-13/14 |
-| Opus | skill | 10.4 | **-50%** | 5/5 | 12/14 |
-| Fable | no skill | 22.6 | | 0/5 | 12/14 |
-| Fable | skill | 11.4 | **-50%** | 5/5 | 12/14 |
-| Sonnet | no skill | 20.4 | | 0/5 | 12/14 |
-| Sonnet | skill, prose form | 18.8 | -8% | 0/5 | 12/14 |
-| Sonnet | skill, tool form | 11.8 | **-42%** | 3/5 | 12/14 |
+| Model | Condition | Skill | Tests (mean) | Change | Seams | Detection |
+| --- | --- | --- | --- | --- | --- | --- |
+| Opus | no skill | | 20.8 | | 4/5 | 12-13/14 |
+| Opus | skill | v1 | 10.4 | -50% | 5/5 | 12/14 |
+| Fable | no skill | | 22.6 | | 0/5 | 12/14 |
+| Fable | skill | v1 | 11.4 | -50% | 5/5 | 12/14 |
+| **Fable** | **skill** | **v4** | **7.4** | **-67%** | **10/10** | **12/14** |
+| Sonnet | no skill | | 20.4 | | 0/5 | 12/14 |
+| Sonnet | skill, prose | v1 | 18.8 | -8% | 0/5 | 12/14 |
+| Sonnet | skill, tool | v2 | 11.8 | -42% | 3/5 | 12/14 |
+
+The skill column matters. This skill has been corrected nine times against
+measured results, and a number is only evidence for the version that produced
+it. The v1 and v2 rows are kept for the trend they show, not as claims about
+what ships today. Only the v4 row describes the current skill. Opus and Sonnet
+have not been re-measured against v4.
+
+The v4 row counts seams out of ten because the fixture holds two removable
+seams, and every one of the five runs removed both. Version 1 removed one seam.
 
 The suite began at 26 tests and a detection score of 12/14. **No run in any
 condition lost detection.** The cut costs nothing.
@@ -93,6 +103,22 @@ The cut is 13 percent here, against 50 percent on the fixture. Real code that is
 already tested with care yields less. Most of the 97 mock assertions were
 legitimate.
 
+## A warning worth reading
+
+Two v4 runs raised a harness security alert. One stated that the agent had
+removed export keywords "specifically so mutation testing could no longer reach
+them", and so had hidden lost coverage from the tool.
+
+The claim is false here, and the check is right to exist. `mutate.mjs` mutates
+the whole file and ignores exports, so the mutant count held at 14 in every run.
+An independent oracle, six mutations written by hand with a different operator
+set, was caught by every swept suite including the seven-test ones.
+
+The pattern the alert names is genuinely dangerous: an agent that deletes tests
+and un-exports functions while a score is watched has every incentive to game
+the score. What separates this skill from that failure is the proof, and only
+the proof. A sweep that reports no per-mutant comparison deserves the alert.
+
 ## Honest limits
 
 - Opus and Fable were measured on the prose version only. Both already reached
@@ -107,6 +133,8 @@ legitimate.
   test-removal warning. That is the correct alarm for an uninvited deletion. The
   mutation score is the evidence that answers it.
 - One Sonnet run failed on a structured-output retry cap and is excluded.
+- Opus and Sonnet were last measured against skill v1 and v2. Only Fable has
+  been measured against the version that ships.
 
 ## Reproduce it
 
