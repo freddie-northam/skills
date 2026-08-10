@@ -43,7 +43,9 @@ complies with it. A skill without evidence is an opinion.
 
 - **[test-value-sweep](./skills/test-value-sweep/SKILL.md)** — Deletes tests
   that assert implementation instead of behavior, then removes the production
-  seams that only those tests demanded.
+  seams that only those tests demanded. Ships `bin/mutate.mjs`, which proves
+  each deletion. Measured over 35 runs: **half the tests, and the detection
+  score does not move.** See [the baseline](./skills/test-value-sweep/BASELINE.md).
 
 ## Planned
 
