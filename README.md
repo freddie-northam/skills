@@ -58,7 +58,6 @@ its place.
 
 | Skill | The moment it applies |
 | --- | --- |
-| `fix-the-code-not-the-gate` | The check is red and you want to finish |
 | `fail-loud` | The dependency failed and the demo must work |
 | `scoped-diff` | You found a defect next to the one you came for |
 | `verify-before-install` | You need a package and you remember the name |
@@ -71,6 +70,12 @@ its place.
 | `report-contract` | The deliverable is a report |
 | `handoff-prose` | You are about to write a commit or a pull request |
 | `a11y-gate` | The screenshot looks correct |
+
+## What did not work
+
+A skill that does not beat its control does not ship. One has already been cut
+after ten runs showed it made the outcome worse than no skill at all. See
+[negative results](./NEGATIVE-RESULTS.md).
 
 ## Credit
 
