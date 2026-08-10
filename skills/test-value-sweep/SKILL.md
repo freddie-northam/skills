@@ -20,9 +20,9 @@ those tests demanded them. When the test goes, the seam goes with it.
 
 **Run this only when the suite is green.**
 
-A red check makes test deletion fraud, not maintenance. When a check is red, you
-are in `fix-the-code-not-the-gate` territory. There you may not touch a test at
-all.
+A red check makes test deletion fraud, not maintenance. When a check is red,
+repair the source. You may not touch a test at all until the suite is green
+again.
 
 This skill is a separate task. Announce it. Never run it inside another task.
 
@@ -34,8 +34,11 @@ itself, and it always says yes. Run the mutation check instead.
 **If the repository already has a mutation runner, use it.** Look for Stryker,
 mutmut, go-mutesting, PIT, or a `test:mutation` script. Its configuration holds
 knowledge this skill does not have, such as which files repay the run and which
-generate thousands of worthless mutants. Scope it to the source file you are
-about to affect.
+generate thousands of worthless mutants.
+
+**The mutation scope must cover the subject file of every test you delete in the
+batch.** A test whose subject sits outside the scope is never proved, however
+green the score looks. Widen the scope, or split the batch.
 
 Only when the repository has none, use the tool that ships here:
 
@@ -126,7 +129,7 @@ the report.
 
 ## Don't
 
-- Delete a test to turn a red check green (see `fix-the-code-not-the-gate`)
+- Delete a test to turn a red check green
 - Delete a test that you did not prove by mutation
 - Rewrite a test and count that as a sweep
 - Add a test in this pass
