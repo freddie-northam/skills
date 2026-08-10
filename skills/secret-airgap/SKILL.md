@@ -14,14 +14,21 @@ A credential that reaches your transcript is burned. Nothing later un-burns it.
 
 ## Read the shape, never the value
 
-To learn whether a variable is set, read its shape:
+To learn whether a variable is set, read the names and count the non-empty
+lines. Never load the file into your shell.
 
 ```bash
-test -n "$STRIPE_KEY" && echo "STRIPE_KEY: set, ${#STRIPE_KEY} chars"
-grep -oE '^[A-Z_][A-Z0-9_]*=' .env
+grep -oE '^[A-Z_][A-Z0-9_]*=' .env        # names only
+grep -c '^[A-Z_][A-Z0-9_]*=.\+' .env      # how many hold a value
 ```
 
 `cat .env` is a violation. So is printing a value to confirm it.
+
+**Do not source the file and echo a length or a prefix.** That reads as
+credential reconnaissance to a security monitor, and it puts a classification of
+a live secret into your output. Five runs of this skill were flagged for exactly
+that before this line existed. The name list answers the question that matters,
+which is whether the variable is present at all.
 
 ## Before every commit
 

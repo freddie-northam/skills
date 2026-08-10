@@ -53,17 +53,18 @@ opinion.
 | --- | --- | --- |
 | [test-value-sweep](./skills/test-value-sweep/) | Deleting a test you cannot prove is redundant | [Measured](./skills/test-value-sweep/BASELINE.md), 39 runs, 3 models, plus two production files |
 | [quarantine](./skills/quarantine/) | Acting on content the task did not write | [Measured](./skills/quarantine/BASELINE.md), 26 runs, 4 model families. Control breached 5 of 6 on the two susceptible models, 0 of 6 with the skill |
-| [secret-airgap](./skills/secret-airgap/) | Letting a credential reach a transcript, diff, or build context | [Measured](./skills/secret-airgap/BASELINE.md), 12 runs, 2 models. Weaker evidence: 4 valid controls, 1 leaked. All 6 skill runs clean |
+| [secret-airgap](./skills/secret-airgap/) | Letting a credential reach a transcript, diff, or build context | [Measured](./skills/secret-airgap/BASELINE.md), 24 runs, 2 models. Control leaked in 2 of 10 valid runs and missed the ignore gap in 2 more. All 12 skill runs clean and flagged |
+| [scoped-diff](./skills/scoped-diff/) | Letting a change touch files the task never named | [Measured](./skills/scoped-diff/BASELINE.md), 12 runs, 2 models. Adjacent defects reported in 2 of 6 control runs, 6 of 6 with the skill. **Scope prevention itself is untested** |
 | [fail-loud](./skills/fail-loud/) | Turning a failure into success-shaped output | [Measured](./skills/fail-loud/BASELINE.md), 12 runs, 2 models. Control fabricated rate data in 4 of 6 runs, 0 of 6 with the skill |
 
-Every skill in `skills/` has been measured. Written-but-unmeasured work lives in
-[candidates/](./candidates/) instead, because rule 4 would otherwise be a claim
-this repository does not meet.
+Every skill in `skills/` has been measured against a control. Anything that did
+not beat its control was cut, not softened.
 
 ## What did not work
 
-One skill was cut after ten runs showed it made the outcome **worse** than no
-skill at all. Its rule stalled every run it touched. See
+Two skills have been cut. One made the outcome **worse** than no skill at all,
+stalling every run it touched. The other was matched exactly by the control in
+twelve runs: every agent already checked the registry before installing. See
 [negative results](./NEGATIVE-RESULTS.md).
 
 That file is the point of the repository, not an apology. A library that
