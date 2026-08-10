@@ -31,11 +31,19 @@ This skill is a separate task. Announce it. Never run it inside another task.
 You may not read a test and then declare it worthless. That judgment certifies
 itself, and it always says yes. Run the mutation check instead.
 
+**If the repository already has a mutation runner, use it.** Look for Stryker,
+mutmut, go-mutesting, PIT, or a `test:mutation` script. Its configuration holds
+knowledge this skill does not have, such as which files repay the run and which
+generate thousands of worthless mutants. Scope it to the source file you are
+about to affect.
+
+Only when the repository has none, use the tool that ships here:
+
 ```bash
 node <skill-dir>/bin/mutate.mjs --file src/thing.js --fn theFunction
 ```
 
-The tool breaks the function on purpose, one change at a time, and runs the
+Either tool breaks the source on purpose, one change at a time, and runs the
 suite after each change. A mutant that survives is a behavior that no test
 covers.
 
