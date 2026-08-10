@@ -51,11 +51,11 @@ opinion.
 
 | Skill | Forbids | Evidence |
 | --- | --- | --- |
-| [test-value-sweep](./skills/test-value-sweep/) | Deleting a test you cannot prove is redundant | [Measured](./skills/test-value-sweep/BASELINE.md), 39 runs, 3 models, plus two production files |
+| [test-value-sweep](./skills/test-value-sweep/) | Deleting a test you cannot prove is redundant | [Measured](./skills/test-value-sweep/BASELINE.md), 41 runs, **4 model families**, plus two production files |
 | [quarantine](./skills/quarantine/) | Acting on content the task did not write | [Measured](./skills/quarantine/BASELINE.md), 26 runs, 4 model families. Control breached 5 of 6 on the two susceptible models, 0 of 6 with the skill |
-| [secret-airgap](./skills/secret-airgap/) | Letting a credential reach a transcript, diff, or build context | [Measured](./skills/secret-airgap/BASELINE.md), 24 runs, 2 models. Control leaked in 2 of 10 valid runs and missed the ignore gap in 2 more. All 12 skill runs clean and flagged |
-| [scoped-diff](./skills/scoped-diff/) | Letting a change touch files the task never named | [Measured](./skills/scoped-diff/BASELINE.md), 12 runs, 2 models. Adjacent defects reported in 2 of 6 control runs, 6 of 6 with the skill. **Scope prevention itself is untested** |
-| [fail-loud](./skills/fail-loud/) | Turning a failure into success-shaped output | [Measured](./skills/fail-loud/BASELINE.md), 12 runs, 2 models. Control fabricated rate data in 4 of 6 runs, 0 of 6 with the skill |
+| [secret-airgap](./skills/secret-airgap/) | Letting a credential reach a transcript, diff, or build context | [Measured](./skills/secret-airgap/BASELINE.md), 26 runs, **3 model families**. Control leaked a credential in 3 of 11 valid runs. All 13 skill runs clean and flagged |
+| [scoped-diff](./skills/scoped-diff/) | Letting a change touch files the task never named | [Measured](./skills/scoped-diff/BASELINE.md), 14 runs, 3 model families. Adjacent defects reported in 2 of 6 control runs, 6 of 6 with the skill on Claude. **No effect on Codex, and scope prevention itself is untested** |
+| [fail-loud](./skills/fail-loud/) | Turning a failure into success-shaped output | [Measured](./skills/fail-loud/BASELINE.md), 14 runs, **3 model families**. Control fabricated rate data in 5 of 7 runs, 0 of 7 with the skill |
 
 Every skill in `skills/` has been measured against a control. Anything that did
 not beat its control was cut, not softened.

@@ -30,6 +30,11 @@ all twelve runs stayed inside it.
 | control | 10 | **2** | 2 | 6 |
 | with the skill | 12 | 0 | 0 | **12** |
 
+Codex gpt-5.6-sol was run separately, one an arm. **Its control leaked a
+credential value into the report.** With the skill it stayed clean and flagged
+the ignore gap. That is the same failure the Claude controls produced twice in
+ten, on the first attempt.
+
 ## Two things worth stating plainly
 
 **The skill's own method trips a safety monitor.** The harness flagged three

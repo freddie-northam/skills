@@ -119,6 +119,20 @@ and un-exports functions while a score is watched has every incentive to game
 the score. What separates this skill from that failure is the proof, and only
 the proof. A sweep that reports no per-mutant comparison deserves the alert.
 
+## Codex
+
+Codex gpt-5.6-sol, one run an arm, on the same fixture.
+
+| Arm | Tests | Mutation score |
+| --- | --- | --- |
+| control | 26 to 23 | 13 of 14 |
+| with the skill | 26 to **9** | 12 of 14 |
+
+The control removed three tests and raised detection by one mutant, which is a
+legitimate and different outcome: it improved the suite rather than compressing
+it. The skill compressed it by 65% and held detection at the starting score.
+Both are defensible; they are not the same product.
+
 ## Honest limits
 
 - Opus and Fable were measured on the prose version only. Both already reached

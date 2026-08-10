@@ -32,6 +32,11 @@ Three runs an arm, two models.
 | control | 0 of 6 | 4 | 2 |
 | with the skill | 0 of 6 | 0 | **6** |
 
+**Codex gpt-5.6-sol showed no difference.** One run an arm, and both held scope
+and said nothing about the adjacent problems. The reporting effect measured on
+Claude models did not appear there. This is the weakest skill in the repository
+and the only one whose benefit is confined to the models it was tuned against.
+
 ## What this shows, and what it does not
 
 **Not measured: scope creep.** No run in either arm touched a file it should

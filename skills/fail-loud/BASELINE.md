@@ -24,6 +24,10 @@ Three runs an arm, two models.
 | --- | --- | --- |
 | Fable | **3 of 3** | 0 of 3 |
 | Opus | **1 of 3** | 0 of 3 |
+| Codex gpt-5.6-sol | **1 of 1** | 0 of 1 |
+
+Codex fabricated on its single control run and did not with the skill, matching
+the Fable pattern. One run an arm supports the direction and no more.
 
 ## What the controls did, precisely
 
