@@ -54,6 +54,22 @@ may not fall.** A suite that kills 12 of 14 mutants before the sweep must kill
 The suite stays green throughout, so green proves nothing here. The score is the
 proof. A sweep that reports no score proved nothing.
 
+Write the before-report and the after-report to different paths. A runner that
+overwrites its own baseline leaves you unable to find the mutant you lost.
+
+### Delete in batches
+
+A mutation run costs a minute or more on real code. One run for each candidate
+is not affordable, so delete a batch and run once.
+
+- The score holds. The whole batch stands.
+- The score falls. One test in the batch was the only killer of a mutant.
+  Restore the batch, halve it, and run again. Repeat until you find the test
+  that matters, then keep it and delete the rest.
+
+A batch proof is weaker than a proof for each test. It shows that no deletion
+was the unique killer of a mutant. That is enough, and it is affordable.
+
 ## Delete
 
 - Tests that assert that a call happened, not that a result is correct

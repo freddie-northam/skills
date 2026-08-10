@@ -59,6 +59,40 @@ control run kept the mock-call tests because they assert "different observable
 surfaces, not duplicated coverage". A required score leaves no room for that
 substitution, because 26 tests to 25 tests is visibly not a sweep.
 
+## On a real repository
+
+The fixture is 26 tests. This is the same skill on production code.
+
+Target: `takerecord-ai`, a Next.js and Drizzle application with 9,134 tests
+across 952 files, and 1,970 mock-call assertions. One file swept:
+`comments-service.test.ts`, 83 cases and 97 mock-call assertions, against a
+909-line source. Scored with the repository's own Stryker, not with the tool
+that ships here.
+
+| | Before | After |
+| --- | --- | --- |
+| Tests | 83 | 72 (-13%) |
+| Lines of test code | | -205 |
+| Mutation score | 514/841 (61.1%) | 514/841 (61.1%) |
+| Seams removed | | none |
+
+The status breakdown was identical either side: 514 killed, 185 survived, 142
+without coverage.
+
+**The gate caught a bad deletion.** The first batch removed 12 tests and the
+score fell to 513. One test judged an obvious duplicate was the only killer of a
+`return false` to `return true` mutant. It was restored and the score recovered.
+Reading alone had produced a confident and wrong answer, which is the exact
+failure the mutation proof exists to catch.
+
+**No seam came out, and that is the correct result.** Every export of the source
+had a caller outside the test file. The skill removes seams that only tests use.
+It found none, and it changed no production code.
+
+The cut is 13 percent here, against 50 percent on the fixture. Real code that is
+already tested with care yields less. Most of the 97 mock assertions were
+legitimate.
+
 ## Honest limits
 
 - Opus and Fable were measured on the prose version only. Both already reached
