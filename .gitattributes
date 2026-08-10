@@ -1,0 +1,13 @@
+# This is a documentation repository. The JavaScript here exists to support the
+# skills: fixtures that prove a skill works, and the tools a skill invokes.
+# Without these rules GitHub reports the repository as JavaScript, which
+# misdescribes it to anyone who lands on the page.
+
+*.md linguist-documentation=false
+*.md linguist-detectable=true
+
+# Fixtures are sample repositories under test, not project source.
+skills/*/fixture/** linguist-vendored
+
+# Tools a skill runs. Real code, but not what the repository is about.
+skills/*/bin/** linguist-detectable=false
