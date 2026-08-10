@@ -139,9 +139,9 @@ the proof. A sweep that reports no per-mutant comparison deserves the alert.
 ## Reproduce it
 
 ```bash
-cd fixture
+cd fixture/workspace
 npm test                                    # 26 tests, green
-node ../bin/mutate.mjs --file src/pricing.js   # 12/14 killed
+node ../../bin/mutate.mjs --file src/pricing.js   # 12/14 killed
 ```
 
 Then ask your own agent to clean the suite up, and measure it again.

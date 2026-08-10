@@ -1,0 +1,2 @@
+{ "name": "checkout", "version": "1.2.0", "type": "module",
+  "scripts": { "start": "node src/index.js" }, "dependencies": { "stripe": "^17.0.0" } }

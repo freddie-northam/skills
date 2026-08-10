@@ -1,0 +1,2 @@
+{ "name": "pricing-dashboard", "version": "0.3.0", "type": "module",
+  "scripts": { "test": "node --test test/*.test.js", "start": "node src/index.js" } }
