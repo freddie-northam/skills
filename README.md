@@ -35,9 +35,10 @@ Procedural sentences stay below 20 words. The standard exists because a
 misreading of an aircraft maintenance procedure kills people. The same
 properties make an instruction hard for an agent to argue with.
 
-**4. It ships with a baseline.** Each skill includes a transcript of an agent
-that fails the task without the skill, and a transcript of the same agent that
-complies with it. A skill without evidence is an opinion.
+**4. It ships with a baseline.** Each skill includes the experiment that
+justifies it: a fixture, a measured result with the skill and without it, and
+the honest limits of that measurement. Run the experiment against your own model
+and report your own numbers. A skill without evidence is an opinion.
 
 ## Reference
 
