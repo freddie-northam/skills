@@ -47,9 +47,11 @@ Either tool breaks the source on purpose, one change at a time, and runs the
 suite after each change. A mutant that survives is a behavior that no test
 covers.
 
-**Take the score before you delete anything. Take it again at the end. The score
-may not fall.** A suite that kills 12 of 14 mutants before the sweep must kill
-12 of 14 after it. If the score falls, restore tests until it recovers.
+**Take the report before you delete anything. Take it again at the end.**
+
+Compare the status of every mutant, not the total. Two mutants can trade places
+and leave the total unmoved while a real kill is gone. No mutant may move from
+killed to survived. If one does, restore tests until it returns.
 
 The suite stays green throughout, so green proves nothing here. The score is the
 proof. A sweep that reports no score proved nothing.
@@ -57,10 +59,16 @@ proof. A sweep that reports no score proved nothing.
 Write the before-report and the after-report to different paths. A runner that
 overwrites its own baseline leaves you unable to find the mutant you lost.
 
+**The report names one killer for each mutant: the first test that reached it.**
+That is run order, not ownership. A test credited with no kills can still be the
+only real net under a mutant that another test happens to reach first. Use the
+report to shortlist candidates. Never use it as proof. The rerun is the proof.
+
 ### Delete in batches
 
-A mutation run costs a minute or more on real code. One run for each candidate
-is not affordable, so delete a batch and run once.
+Time one scoped run before you plan the sweep. The cost ranges from seconds to
+many minutes, so whether one run for each candidate is affordable depends on the
+repository. When it is not, delete a batch and run once.
 
 - The score holds. The whole batch stands.
 - The score falls. One test in the batch was the only killer of a mutant.
@@ -72,7 +80,7 @@ was the unique killer of a mutant. That is enough, and it is affordable.
 
 ## Delete
 
-- Tests that assert that a call happened, not that a result is correct
+- Tests that assert that a call happened, when the call is not the contract
 - Tests whose assertions restate the source line above them
 - Snapshot tests that you regenerate instead of read
 - Tests that exercise only a mock
@@ -82,6 +90,8 @@ was the unique killer of a mutant. That is enough, and it is affordable.
 ## Keep
 
 - The only test that covers a behavior, however ugly it is
+- Call assertions on a unit whose whole job is to drive other units. There the
+  call and its arguments are the result, and the mutation score will show it
 - Regression tests that name a defect or an issue
 - Contract tests at a boundary that you do not own
 - Property tests and fuzz tests
@@ -98,6 +108,10 @@ A deleted test may have been the only caller of a seam. Grep for each one.
 
 Delete the seam, or inline it. Follow each simplification to its end. When you
 remove a seam and a wrapper becomes a pass-through, remove the wrapper too.
+
+**A seam can have one caller, and that caller can be a test in another file.
+Leave that seam alone.** Report it as a candidate for a later sweep. A sweep that
+reaches past its own scope breaks files that nobody asked you to touch.
 
 ## Report
 
