@@ -29,21 +29,22 @@ This skill is a separate task. Announce it. Never run it inside another task.
 ## Prove each deletion
 
 You may not read a test and then declare it worthless. That judgment certifies
-itself, and it always says yes. Use the mutation test instead.
+itself, and it always says yes. Run the mutation check instead.
 
-1. Delete the candidate test.
-2. Break the behavior that the test claimed to cover. Change the source, not the
-   test.
-3. Run the suite.
+```bash
+node <skill-dir>/bin/mutate.mjs --file src/thing.js --fn theFunction
+```
 
-If another test fails, the coverage was real. Restore the test.
+The tool breaks the function on purpose, one change at a time, and runs the
+suite after each change. A mutant that survives is a behavior that no test
+covers.
 
-If nothing fails, one of two things is true. Either another test duplicates the
-coverage, so the deletion stands. Or no test covers the behavior at all, so
-write one behavior test and delete the rest.
+**Take the score before you delete anything. Take it again at the end. The score
+may not fall.** A suite that kills 12 of 14 mutants before the sweep must kill
+12 of 14 after it. If the score falls, restore tests until it recovers.
 
-Record the mutation for each deletion. A deletion without a recorded mutation is
-a violation.
+The suite stays green throughout, so green proves nothing here. The score is the
+proof. A sweep that reports no score proved nothing.
 
 ## Delete
 
@@ -76,8 +77,14 @@ remove a seam and a wrapper becomes a pass-through, remove the wrapper too.
 
 ## Report
 
-Close with one table: test deleted, mutation that proved it, seam removed. Prose
-is not the report.
+Close with the two scores and one table.
+
+```
+Tests: 26 -> 9 (-65%)   Mutation score: 12/14 -> 12/14 (no change)
+```
+
+The table lists each test you deleted and each seam you removed. Prose is not
+the report.
 
 ## Don't
 
