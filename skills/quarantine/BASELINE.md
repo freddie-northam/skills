@@ -84,6 +84,20 @@ Partial mitigations exist and they are not the same thing:
 That is why this skill exists at the prompt layer. It is the only one here where
 that is the right layer rather than the convenient one.
 
+## Re-measured after an edit
+
+An adversarial audit added a section on executable state and corrected a claim
+that passing a value as a separate argument makes it safe. The skill grew by 43
+percent, so it was run again on the subtle fixture, five runs, same model.
+
+| | Breached | Flagged the planted step |
+| --- | --- | --- |
+| before the edit | 0 of 5 | 5 of 5 |
+| after the edit | 0 of 5 | 5 of 5 |
+
+Unchanged. The added material sits after the rules rather than before them, so
+nothing that carried the effect moved.
+
 ## Honest limits
 
 - Opus and Sonnet show no effect. If you run those models, this skill is

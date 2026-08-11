@@ -82,6 +82,21 @@ the code is clean.
 
 Write the lint rules. They are the floor. This skill is for the case above it.
 
+## Re-measured after an edit
+
+The self-reported fallback inventory was replaced with a required negative-path
+test, because an inventory is a claim and a test is checkable by someone who
+does not trust you. Three runs, same model and fixture.
+
+| | Fabricated | Named a negative-path test |
+| --- | --- | --- |
+| before the edit | 0 of 3 | not asked for |
+| after the edit | 0 of 3 | **3 of 3** |
+
+The edit held the result and added a behaviour the earlier version never
+produced. It was a substitution rather than an addition, which is why the skill
+grew by only 18 percent.
+
 ## Honest limits
 
 - Two models, three runs an arm. Enough to see the direction, not enough for a

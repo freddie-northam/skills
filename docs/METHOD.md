@@ -89,6 +89,16 @@ recovered the result and improved on it.
 Attention thins across excess. A correct sentence in the wrong place costs more
 than it adds, and nothing but a rerun will tell you which case you have.
 
+**Growth is not the risk. Displacement is.** Two other skills were edited by the
+same audit and both held: one grew by 43 percent and kept its result exactly,
+because the new section was appended after the rules rather than inserted before
+them. The one that regressed had its load-bearing table pushed from 61 percent
+to 70 percent down the page. Ask what moved, not how much was added.
+
+The edit that held best was a substitution rather than an addition. It replaced a
+self-reported inventory with a required test, grew the skill by 18 percent, and
+produced a behaviour the earlier version never showed.
+
 ## Find out which part does the work
 
 Split a skill and run its halves. One skill here is carried by its proof and
