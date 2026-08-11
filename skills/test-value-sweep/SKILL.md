@@ -52,12 +52,28 @@ covers.
 
 **Take the report before you delete anything. Take it again at the end.**
 
-Compare the status of every mutant, not the total. Two mutants can trade places
-and leave the total unmoved while a real kill is gone. No mutant may move from
-killed to survived. If one does, restore tests until it returns.
+Compare mutants by identity, not by number. Three failures hide behind an
+unchanged total:
 
-The suite stays green throughout, so green proves nothing here. The score is the
-proof. A sweep that reports no score proved nothing.
+1. **A trade.** Two mutants swap status and the total holds.
+2. **A disappearance.** You removed the source a mutant lived in, so the mutant
+   is gone. Nothing moved from killed to survived, and the behaviour is now
+   untested. This is the one that catches seam removal.
+3. **A scope change.** The second run covered fewer files than the first.
+
+So: record every baseline mutant identifier before you start, with the source
+hash and the exact test command. At the end, **every baseline mutant must still
+exist and must still be killed.** A missing mutant fails the sweep exactly as a
+survived one does.
+
+The suite stays green throughout, so green proves nothing here.
+
+The score is not proof either. It shows that the mutants this runner generated,
+under this operator set, over this file set, kept their status. Behaviour no
+operator reaches is invisible to it, and a dynamic caller found only through a
+configuration string or a plugin registry is invisible to your grep. **A sweep
+without a score has proved nothing. A sweep with one has proved something
+narrow.** Say which.
 
 Write the before-report and the after-report to different paths. A runner that
 overwrites its own baseline leaves you unable to find the mutant you lost.
@@ -115,6 +131,13 @@ remove a seam and a wrapper becomes a pass-through, remove the wrapper too.
 **A seam can have one caller, and that caller can be a test in another file.
 Leave that seam alone.** Report it as a candidate for a later sweep. A sweep that
 reaches past its own scope breaks files that nobody asked you to touch.
+
+**A grep does not find every caller.** Dependency injection tokens, plugin
+registries, configuration strings and generated registrations all reference a
+symbol without naming it in a way `rg` matches. Removing such a seam keeps every
+unit test green, removes the mutants that lived in it, and fails in production.
+When a symbol is exported across a package boundary, treat the grep as
+inconclusive and leave it.
 
 ## Report
 

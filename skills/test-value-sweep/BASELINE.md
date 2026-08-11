@@ -156,10 +156,16 @@ repositories with no mutation runner, which is most of them.
   -50%, so the tool version was not re-run for them. Sonnet was measured on both.
 - The fixture holds 26 tests. A real suite has thousands, and an agent cannot
   hold one in context. This experiment does not reach that regime.
-- `mutate.mjs` proves a deletion is safe. It cannot prove a kept test is
-  worthless, because it generates no mutant for code that no operator matches.
-  An agent found this limit during a run and correctly kept the tests it could
-  not disprove.
+- `mutate.mjs` does not prove a deletion is safe. It shows that the mutants it
+  generated, under its operator set, over the file it was pointed at, kept their
+  status. It cannot prove a kept test is worthless, and it says nothing about
+  behaviour no operator reaches.
+- **A removed seam removes its mutants.** Nothing then moves from killed to
+  survived, so an unchanged score can hide lost coverage entirely. The skill now
+  requires baseline mutant identities to be recorded and every one of them to
+  still exist at the end. The runs above predate that rule.
+- The Codex comparison is one run an arm. It records two outcomes, not a
+  model-level distinction.
 - Deleting test files trips harness safety checks. Several runs raised a
   test-removal warning. That is the correct alarm for an uninvited deletion. The
   mutation score is the evidence that answers it.

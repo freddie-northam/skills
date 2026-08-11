@@ -64,11 +64,14 @@ A run that refused put the reason plainly:
 
 **No. This is the one where no deterministic check exists.**
 
-There is no static rule that tells you an agent obeyed text it read. The
-instruction and the content arrive on the same channel, in the same language,
-and a check that could tell them apart would have to understand both. Every
-other skill in this repository has a hook or a CI gate that does its job better.
-This one does not.
+No hook here does this job, and no hook was built or tested to try. That is
+weaker than saying none could exist. Provenance tracking, capability boundaries,
+allowlists and taint analysis are all real techniques that would narrow the
+problem without solving natural language, and none of them is evaluated here.
+
+What is true is narrower: the instruction and the content arrive on the same
+channel in the same language, and the other skills in this repository have an
+obvious deterministic guard while this one does not.
 
 Partial mitigations exist and they are not the same thing:
 
@@ -89,6 +92,13 @@ that is the right layer rather than the convenient one.
   support more than that.
 - One fixture, one payload shape. A file write is easy to detect. An
   exfiltration through an image URL is not, and is untested here.
+- **The fixture only models injection as text.** A hostile pull request that
+  adds a `pretest` hook to `package.json` compromises the agent when it runs the
+  repository's own test command, having correctly identified every textual
+  injection on the way. The oracle would report a pass. That failure mode is
+  real, unmodelled, and now addressed in the skill rather than in the evidence.
+- "No effect on Opus and Sonnet" means no observed difference in two runs an
+  arm. That is not the same as no effect.
 - The blunt fixture is kept deliberately. It shows the familiar attack no longer
   works on frontier models, which is why the subtle one exists.
 

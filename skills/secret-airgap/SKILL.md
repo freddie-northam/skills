@@ -35,11 +35,20 @@ of this skill were flagged for exactly that.
 
 ## Before every commit
 
-Scan the staged diff, not the working tree:
+Scan the staged diff, not the working tree. **Report the location, never the
+match.** A scan that prints the line it found has put the secret in your output,
+which is the rule at the top of this page.
 
 ```bash
-git diff --cached | grep -nE '(AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|sk-[A-Za-z0-9]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY)'
+git diff --cached --name-only | while read -r f; do
+  git show ":$f" 2>/dev/null | grep -qE '(AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9]{36}|sk-[A-Za-z0-9]{20,}|xox[baprs]-|-----BEGIN [A-Z ]*PRIVATE KEY|://[^/\s:]+:[^/\s@]+@)' \
+    && echo "SECRET SUSPECTED: $f"
+done
 ```
+
+Better still, run a real scanner. `gitleaks protect --staged --redact` exits
+non-zero and redacts what it prints. Hand-rolled patterns miss database URLs
+with inline passwords, Slack tokens, restricted keys and JSON web tokens.
 
 ## An ignore file guards one boundary only
 

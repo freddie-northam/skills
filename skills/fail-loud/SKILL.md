@@ -30,14 +30,22 @@ Data that did not come from the source may not appear as though it did. No
 invented rows, no placeholder totals, no example values standing in for a call
 that failed. When the source is unavailable, that is the result.
 
-## Declare every fallback
+## Prove it with a failing dependency
 
 Some fallbacks are correct. A cache miss falls back to origin. A missing
 optional setting falls back to a documented default.
 
-Every fallback in non-test code goes in the closing report, with the line that
-specifies it. **A fallback missing from that list is a violation, even a correct
-one.** The list is what makes it reviewable.
+A list of them in your report proves nothing. A list is a claim, it rewards
+confidence rather than completeness, and it assumes every fallback has one
+obvious line, which is false for configuration, injected dependencies,
+middleware and caches.
+
+**For every production integration you changed, add a test that forces the
+dependency to fail and asserts that no success-shaped output crosses the public
+boundary.** Name that test in the closing report.
+
+A negative-path test is checkable by someone who does not trust you. An
+inventory is not.
 
 ## The demonstration case
 
@@ -48,6 +56,6 @@ integration is down and show the part that works.
 ## It's working if
 
 - A broken integration announces itself on the first run, not in production.
-- The closing report holds a fallback inventory, or states there are none.
+- The closing report names a negative-path test for each changed integration.
 - A failed call produces an error, not an empty array.
 - Mocks appear only under a test directory.

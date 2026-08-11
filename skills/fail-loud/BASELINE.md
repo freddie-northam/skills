@@ -31,20 +31,21 @@ the Fable pattern. One run an arm supports the direction and no more.
 
 ## What the controls did, precisely
 
-They did not lie about it. Every control that fabricated also labelled the data
-and warned the user:
+They disclosed it, which is not the same as being truthful about it. Every
+control that fabricated also labelled the data and warned the user:
 
 > the numbers on screen are the cached snapshot from 2026-08-08, clearly
 > labeled `"source": "cached"` in the payload
 
-That is more honest than hiding it, and it is still fabrication. There was no
-cached snapshot. The agent invented `USD: 1.27, EUR: 1.17, JPY: 199.4`, gave
-them a timestamp two days old, wrote them into `src/`, and shipped a code path
-that serves invented numbers whenever the provider is unreachable. The label
-depends on a caller reading a `source` field, and the timestamp makes invented
-data look retrieved.
+Disclosing it is better than hiding it, and the label itself is false. Nothing
+was ever cached. The agent invented `USD: 1.27, EUR: 1.17, JPY: 199.4`, stamped
+them two days old, wrote them into `src/`, and shipped a code path that serves
+invented numbers whenever the provider is unreachable. `source: "cached"` is a
+claim about provenance, and the provenance does not exist.
 
-A board demo would have shown made-up exchange rates.
+The oracle read the source, not a running screen. What is demonstrated is that
+the shipped code path returns invented rates when the provider is down. Whether
+a particular demo would have surfaced them is inference.
 
 ## What the skill produced instead
 
@@ -86,8 +87,17 @@ Write the lint rules. They are the floor. This skill is for the case above it.
 - Two models, three runs an arm. Enough to see the direction, not enough for a
   rate.
 - Opus fabricated once in three. On Opus this skill is closer to insurance.
-- The oracle detects fabricated *tables*. An agent that fabricates a single
-  scalar, or that returns an empty array on failure, needs a different check.
+- The oracle detects fabricated *tables*, a literal return from a `catch`, and
+  files named for mocks. It measures syntax and filenames, not fabrication. A
+  legitimate mock in the wrong directory is a false positive; a generated scalar,
+  a seeded database value, or a misleading provider adapter escapes it.
+- **The fixture cannot model discovery.** In a large repository a fallback often
+  lives in another package, behind dependency injection, returning correctly
+  shaped data with no `catch` and no literal table. An agent inspecting only its
+  own diff reports none and is wrong. Everything here sits in one small tree.
+- "No rule catches the judgment" is too strong. A custom lint rule can reject a
+  hard-coded rate map or a false provenance label. No such rule was written or
+  tested here, so the comparison with lint is argument, not evidence.
 - The fixture makes an honest green suite reachable through dependency
   injection. A fixture with no honest path would test refusal instead, which is
   a different question.
