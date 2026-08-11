@@ -77,6 +77,23 @@ models and by 8% on a third, until it shipped a tool rather than a procedure,
 after which the third reached 42%. A single headline number hides this. Every result
 here names its model and the version of the skill that produced it.
 
+## Re-measure after you edit
+
+An edit that fixes a real defect can still make the skill worse. One skill here
+had two genuine faults corrected by an adversarial audit, and both corrections
+were made by adding explanation around the part that already worked. The skill
+grew by half, the section carrying its effect moved further down the page, and
+its measured behaviour fell from 12 of 12 to 1 of 3. Tightening it back
+recovered the result and improved on it.
+
+Attention thins across excess. A correct sentence in the wrong place costs more
+than it adds, and nothing but a rerun will tell you which case you have.
+
+## Find out which part does the work
+
+Split a skill and run its halves. One skill here is carried by its proof and
+another by a single table, and knowing which changes what you may safely edit.
+
 ## Cut what loses
 
 A skill that does not beat its control does not ship, however well written.

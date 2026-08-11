@@ -74,6 +74,50 @@ this experiment did not test that boundary either. Install the hooks. Treat this
 skill as covering the gap between them, on the argument above rather than on
 evidence from these runs.
 
+## Which part of the skill does the work
+
+The skill was split and each part run on the fixture, three runs an arm,
+sequentially.
+
+| Arm | Flagged the ignore gap |
+| --- | --- |
+| no skill | 1 of 3 |
+| constraint only, the prohibition and revoke ordering | 1 of 3 |
+| **attention only, the boundary table and the greps** | **3 of 3** |
+| whole skill, as it stood that day | 1 of 3 |
+
+**Attention carries this skill.** The boundary table alone did the work, and the
+prohibition alone did nothing measurable. That is the opposite of `sweep-tests`,
+where the proof carried the skill and the lists added least.
+
+So the mechanism is a property of the individual skill, not a rule about skills.
+Ask which one a skill runs on before you edit it.
+
+## A regression this ablation caught
+
+The whole-skill arm scoring 1 of 3 was the finding. An earlier version of this
+skill had flagged the gap in 12 of 12 runs.
+
+Between the two, an adversarial audit found two real defects: the staged-diff
+scan printed the secret it detected, and the hook comparison table claimed
+results from comparisons that were never run. Both corrections were right. Both
+were made by adding explanation around the part that worked.
+
+| | Words | Boundary table sits at | Flagged the gap |
+| --- | --- | --- | --- |
+| before the audit | 289 | 61% through | 12 of 12 |
+| after the audit | 440 | 70% through | 1 of 3 |
+| after tightening | **330** | **26% through** | **4 of 5** |
+
+The tightened version keeps both corrections, leads with the boundary table, and
+cuts the explanatory bulk. It also produced a behaviour neither earlier version
+did: **five of five runs named every boundary separately** rather than checking
+version control alone.
+
+**An edit that fixes a real defect can still make a skill worse.** Only a
+re-measurement shows it. Four such edits were made across four skills after that
+audit and none was re-measured at the time; this is the one that was checked.
+
 ## Honest limits
 
 - One ecosystem. A `.env` file and a Node project. Cloud secret managers, CI
