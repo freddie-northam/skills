@@ -100,8 +100,8 @@ had a caller outside the test file. The skill removes seams that only tests use.
 It found none, and it changed no production code.
 
 The cut is 13 percent here, against 50 percent on the fixture. Real code that is
-already tested with care yields less. Most of the 97 mock assertions were
-legitimate.
+already tested with care yields less. 86 of the 97 mock assertions survived
+the sweep.
 
 ## A warning worth reading
 
@@ -148,7 +148,7 @@ which tests to remove. A gate with no sweep leaves the dead tests in place. A
 sweep with no gate is a promise.
 
 If you adopt one thing here, adopt the gate. `bin/mutate.mjs` exists for
-repositories with no mutation runner, which is most of them.
+repositories with no mutation runner. I have not measured how many that is.
 
 ## Which part of the skill does the work
 

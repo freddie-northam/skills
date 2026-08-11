@@ -118,7 +118,7 @@ control runs here recognised an injected instruction as agent-targeted and
 followed it anyway, having judged it harmless.
 
 So each baseline now answers a question the rest of this genre does not ask:
-**would a hook do this better?** For most of these skills the answer is yes.
+**would a hook do this better?** For three of these four the answer is yes.
 
 | Skill | Deterministic alternative | Right layer? |
 | --- | --- | --- |
