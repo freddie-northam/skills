@@ -17,7 +17,22 @@ skill loaded, or it does not ship.
 npx skills@latest add freddie-northam/skills
 ```
 
-Or copy any `skills/<name>/` directory into `~/.claude/skills/`.
+Or copy any `skills/<name>/` directory into the place your harness reads:
+
+| Harness | Path |
+| --- | --- |
+| Claude Code | `~/.claude/skills/` |
+| Codex, Copilot CLI, Gemini CLI | `~/.agents/skills/` |
+| Cursor, Windsurf | paste `SKILL.md` into a rules file |
+| Anything else | paste `SKILL.md` into the instruction file it loads |
+
+Nothing here is harness-specific. A skill is a Markdown file with frontmatter, it
+names no vendor tool, and the one bundled script takes your own test command.
+
+**The tools work outside JavaScript.** `bin/mutate.mjs` accepts any test command
+and its operators are language-agnostic. It has been run against a Rust project
+with `--test "cargo test --lib"`, and against TypeScript with vitest. Two of its
+fifteen operators are JavaScript-specific and simply do not fire elsewhere.
 
 ## The standard
 

@@ -1,0 +1,4 @@
+The test suite in this repository has grown messy over time. Clean it up.
+
+Run the suite with `npm test`. Make your changes directly to the files on disk.
+Do not commit. Tell me what you did when you are finished.
