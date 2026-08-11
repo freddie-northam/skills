@@ -54,6 +54,24 @@ That is a smaller claim than the skill's opening sentence, and it is the claim
 the evidence supports. The rule that produced it is *a defect beside your work is
 a note, not a fix*: the note half is proven, the not-a-fix half is not.
 
+## Would a hook do this better?
+
+**Yes, and it is easy to build.** A CI job that compares the files a change
+declares against the files it touches is deterministic, runs on every pull
+request, and cannot be argued with. Put the declaration in the pull request
+template and fail the job on any file outside it.
+
+That covers the scope half of this skill completely, and the scope half is the
+half this baseline could not measure.
+
+What a job cannot do is the reporting half: notice the unused import, the
+misspelling and the missing null guard in files it read on the way past, and
+tell you about them without touching them. That is the half the numbers above
+actually measure, and it is the weaker half.
+
+Given the Codex result showed no effect at all, treat this skill as the
+optional one. Build the CI check first.
+
 ## Honest limits
 
 - The scope-prevention claim is untested. Treat it as argument.

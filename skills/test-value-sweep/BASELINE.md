@@ -133,6 +133,23 @@ legitimate and different outcome: it improved the suite rather than compressing
 it. The skill compressed it by 65% and held detection at the starting score.
 Both are defensible; they are not the same product.
 
+## Would a hook do this better?
+
+**A CI gate is the real control. This skill is the thing that does the work.**
+
+A mutation-score threshold in continuous integration is deterministic: run
+Stryker, or an equivalent, and fail the build if the score falls. No agent can
+talk its way past that, and it protects the suite whether or not anyone loads a
+skill.
+
+The two are not substitutes. The gate says the score may not fall. The skill is
+how an agent deliberately removes tests without making it fall, and how it knows
+which tests to remove. A gate with no sweep leaves the dead tests in place. A
+sweep with no gate is a promise.
+
+If you adopt one thing here, adopt the gate. `bin/mutate.mjs` exists for
+repositories with no mutation runner, which is most of them.
+
 ## Honest limits
 
 - Opus and Fable were measured on the prose version only. Both already reached

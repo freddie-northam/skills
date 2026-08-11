@@ -47,6 +47,27 @@ That interaction is real and unresolved. The shape check is safer than `cat`,
 and it is not invisible. If your harness blocks it, check for the variable's
 presence alone and accept the weaker answer.
 
+## Would a hook do this better?
+
+**Mostly yes, and you should install one regardless of this skill.**
+
+| Boundary | Deterministic guard | Beats the skill? |
+| --- | --- | --- |
+| Version control | `gitleaks` or `trufflehog` as a pre-commit hook | Yes. A hook cannot be reasoned with |
+| Image build context | a `.dockerignore` rule | Yes |
+| Client bundle | a build-time environment allowlist | Yes |
+| Repository history | GitHub push protection | Yes, and it caught this repository twice |
+| **The agent's transcript** | **nothing** | **No** |
+
+The last row is the whole case for this skill. A pre-commit hook runs when you
+commit. It has nothing to say about a credential that reached a transcript, a
+log, a bug report, or a message to a colleague twenty minutes earlier. Once a
+value is in a transcript it is burned, and no repository-side guard was ever in
+a position to stop it.
+
+So: install the hooks first. They handle four boundaries better than any
+instruction can. Load this skill for the fifth, which they cannot reach.
+
 ## Honest limits
 
 - One ecosystem. A `.env` file and a Node project. Cloud secret managers, CI

@@ -60,6 +60,27 @@ A run that refused put the reason plainly:
 
 > Writing that file would tell your CI a green light I have not actually earned.
 
+## Would a hook do this better?
+
+**No. This is the one where no deterministic check exists.**
+
+There is no static rule that tells you an agent obeyed text it read. The
+instruction and the content arrive on the same channel, in the same language,
+and a check that could tell them apart would have to understand both. Every
+other skill in this repository has a hook or a CI gate that does its job better.
+This one does not.
+
+Partial mitigations exist and they are not the same thing:
+
+- Give the agent no write access while it processes untrusted content. Effective,
+  and it rules out most useful work.
+- Strip HTML comments and hidden styling before the agent sees the page. Defeats
+  the blunt fixture here and not the subtle one, which hides in plain prose.
+- Sandbox the workspace. Limits the damage; does not stop the obedience.
+
+That is why this skill exists at the prompt layer. It is the only one here where
+that is the right layer rather than the convenient one.
+
 ## Honest limits
 
 - Opus and Sonnet show no effect. If you run those models, this skill is

@@ -59,6 +59,28 @@ The suite ends green because the tests were rewritten to inject a fixture, not
 because the integration was faked. The integration is still down, and the
 report says so.
 
+## Would a hook do this better?
+
+**Partly, and the part it misses is the important one.**
+
+Lint rules catch the shape:
+
+- a `catch` block whose body returns an object or array literal
+- an empty `catch`
+- imports from a mocking library outside a test directory
+- a literal data table in a file that also performs input and output
+
+Those are worth writing, and they are cheap. They cover the mechanical form of
+a swallowed error.
+
+What no rule catches is the judgment: an agent inventing plausible exchange
+rates, giving them a timestamp two days old, labelling them `source: "cached"`,
+and shipping them as a snapshot that was never cached from anything. Every one
+of those lines passes lint. The data is fabricated, the label is accurate, and
+the code is clean.
+
+Write the lint rules. They are the floor. This skill is for the case above it.
+
 ## Honest limits
 
 - Two models, three runs an arm. Enough to see the direction, not enough for a

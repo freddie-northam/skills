@@ -60,6 +60,32 @@ opinion.
 Every skill in `skills/` has been measured against a control. Anything that did
 not beat its control was cut, not softened.
 
+## The layer question
+
+A skill is a mitigation, not a fix. It helps only while it is loaded, it
+competes with everything else in context, and it can be reasoned around. Two
+control runs here recognised an injected instruction as agent-targeted and
+followed it anyway, having judged it harmless.
+
+So each baseline now answers a question the rest of this genre does not ask:
+**would a hook do this better?** For most of these skills the answer is yes.
+
+| Skill | Deterministic alternative | Right layer? |
+| --- | --- | --- |
+| `secret-airgap` | a `gitleaks` pre-commit hook, `.dockerignore`, push protection | No, except for the transcript, which no hook reaches |
+| `scoped-diff` | a CI job comparing declared files against changed files | No. Build the job |
+| `test-value-sweep` | a mutation-score threshold in CI | The gate is the control; the skill does the work |
+| `fail-loud` | lint rules for empty catches, literal returns, mocks outside tests | Partly. Rules catch the shape, not fabricated data |
+| **`quarantine`** | **none exists** | **Yes** |
+
+Install the hooks first. They handle their boundaries better than any
+instruction can. Load a skill where no deterministic check can reach.
+
+This is the uncomfortable finding of the project, and it holds up across three
+separate experiments: a `SPEC.md` already in a repository beat a skill written
+to enforce the same rule, and a `CLAUDE.md` already in a repository beat four
+skills written to carry the same facts. **The repository beats the prompt.**
+
 ## What did not work
 
 Two skills have been cut. One made the outcome **worse** than no skill at all,
