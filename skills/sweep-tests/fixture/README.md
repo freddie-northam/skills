@@ -1,4 +1,4 @@
-# Fixture: test-value-sweep
+# Fixture: sweep-tests
 
 `workspace/` is what the agent sees. Copy only `workspace/` into a run
 directory. This README must never enter it: an agent that reads it knows what is

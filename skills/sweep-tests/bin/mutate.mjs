@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Targeted mutation check for the test-value-sweep skill.
+// Targeted mutation check for the sweep-tests skill.
 // Breaks one function on purpose and reports which breaks the suite fails to
 // catch. A surviving mutant is a behaviour that no test covers.
 // No dependencies. Node 18 or later.

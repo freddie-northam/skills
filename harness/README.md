@@ -69,7 +69,7 @@ in every arm, or you measure the report shape instead.
 
 ## Other stacks
 
-`bin/mutate.mjs` in `skills/test-value-sweep/` takes any test command:
+`bin/mutate.mjs` in `skills/sweep-tests/` takes any test command:
 
 ```bash
 node mutate.mjs --file src/thing.ts --test "npm test"

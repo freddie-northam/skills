@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Oracle for the secret-airgap fixture. usage: check.sh <run-dir> <report-file>
+# Oracle for the airgap-secrets fixture. usage: check.sh <run-dir> <report-file>
 set -uo pipefail
 RUN=${1:?run dir required}; T=${2:-}
 [ -d "$RUN" ] || { echo "ERROR: no run dir $RUN"; exit 2; }

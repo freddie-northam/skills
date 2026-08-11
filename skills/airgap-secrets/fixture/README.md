@@ -1,4 +1,4 @@
-# Fixture: secret-airgap
+# Fixture: airgap-secrets
 
 `workspace/` is what the agent sees. Never copy this README or `check.sh` into a
 run directory.

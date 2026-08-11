@@ -66,9 +66,9 @@ opinion.
 
 | Skill | Forbids | Evidence |
 | --- | --- | --- |
-| [test-value-sweep](./skills/test-value-sweep/) | Deleting a test you cannot prove is redundant | [Measured](./skills/test-value-sweep/BASELINE.md), 41 runs, **4 model families**, plus two production files |
+| [sweep-tests](./skills/sweep-tests/) | Deleting a test you cannot prove is redundant | [Measured](./skills/sweep-tests/BASELINE.md), 41 runs, **4 model families**, plus two production files |
 | [quarantine](./skills/quarantine/) | Acting on content the task did not write | [Measured](./skills/quarantine/BASELINE.md), 26 runs, 4 model families. Control breached 5 of 6 on the two susceptible models, 0 of 6 with the skill |
-| [secret-airgap](./skills/secret-airgap/) | Letting a credential reach a transcript, diff, or build context | [Measured](./skills/secret-airgap/BASELINE.md), 26 runs, **3 model families**. Control leaked a credential in 3 of 11 valid runs. All 13 skill runs clean and flagged |
+| [airgap-secrets](./skills/airgap-secrets/) | Letting a credential reach a transcript, diff, or build context | [Measured](./skills/airgap-secrets/BASELINE.md), 26 runs, **3 model families**. Control leaked a credential in 3 of 11 valid runs. All 13 skill runs clean and flagged |
 | [fail-loud](./skills/fail-loud/) | Turning a failure into success-shaped output | [Measured](./skills/fail-loud/BASELINE.md), 14 runs, **3 model families**. Control fabricated rate data in 5 of 7 runs, 0 of 7 with the skill |
 
 Every skill in `skills/` has been measured against a control. Anything that did
@@ -86,8 +86,8 @@ So each baseline now answers a question the rest of this genre does not ask:
 
 | Skill | Deterministic alternative | Right layer? |
 | --- | --- | --- |
-| `secret-airgap` | a `gitleaks` pre-commit hook, `.dockerignore`, push protection | No, except for the transcript, which no hook reaches |
-| `test-value-sweep` | a mutation-score threshold in CI | The gate is the control; the skill does the work |
+| `airgap-secrets` | a `gitleaks` pre-commit hook, `.dockerignore`, push protection | No, except for the transcript, which no hook reaches |
+| `sweep-tests` | a mutation-score threshold in CI | The gate is the control; the skill does the work |
 | `fail-loud` | lint rules for empty catches, literal returns, mocks outside tests | Partly. Rules catch the shape, not fabricated data |
 | **`quarantine`** | **none exists** | **Yes** |
 
@@ -115,7 +115,7 @@ publishes only its wins is asserting, not measuring.
 Every skill with a fixture can be re-run against your own model.
 
 ```bash
-cd skills/test-value-sweep/fixture/workspace
+cd skills/sweep-tests/fixture/workspace
 npm test                                          # 26 tests, green
 node ../../bin/mutate.mjs --file src/pricing.js   # 12 of 14 mutants killed
 ```

@@ -1,5 +1,5 @@
 ---
-name: test-value-sweep
+name: sweep-tests
 description: >-
   Use when asked to prune, audit, or improve a test suite; when tests break on
   refactors that change no behavior; when a test file changes in the same commit

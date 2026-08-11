@@ -36,8 +36,8 @@ everything scores the same as a skill that deletes correctly, unless something
 was meant to survive.
 
 **Plant one trap.** Something that looks obviously correct and is not. In the
-`test-value-sweep` fixture a snapshot holds the only coverage of negative
-numbers, so deleting it looks tidy and silently drops real coverage.
+`sweep-tests` fixture a snapshot holds the only coverage of negative numbers, so
+deleting it looks tidy and silently drops real coverage.
 
 ## Keep the oracle out of the workspace
 
@@ -56,8 +56,8 @@ agent's own summary is evidence about disclosure, never about compliance.
 
 ## Verify the tool with something other than the tool
 
-`test-value-sweep` is scored by a mutation runner. Proving a swept suite is
-still sound by running the same mutation tool is circular. The result was
+`sweep-tests` is scored by a mutation runner. Proving a swept suite is still
+sound by running the same mutation tool is circular. The result was
 confirmed with six hand-written mutations using a different operator set. All
 were caught, including by the smallest swept suite.
 
@@ -72,9 +72,9 @@ The first does not. Grade that.
 
 ## Report the model
 
-A skill is not uniformly effective. `test-value-sweep` cut a suite by 50% on two
-models and 8% on a third, until it shipped a tool rather than a procedure, after
-which the third reached 42%. A single headline number hides this. Every result
+A skill is not uniformly effective. `sweep-tests` cut a suite by 50% on two
+models and by 8% on a third, until it shipped a tool rather than a procedure,
+after which the third reached 42%. A single headline number hides this. Every result
 here names its model and the version of the skill that produced it.
 
 ## Cut what loses

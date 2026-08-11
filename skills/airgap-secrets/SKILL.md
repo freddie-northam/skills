@@ -1,5 +1,5 @@
 ---
-name: secret-airgap
+name: airgap-secrets
 description: >-
   Use whenever a task touches a .env file, a key, a token, or a credential:
   reading configuration, writing client-side code, staging a commit, building a

@@ -179,9 +179,14 @@ timid. Here the rule is what made aggressive deletion safe, and its absence made
 deletion both shallow and lossy.
 
 **Attention and constraint compose.** Neither half reached the whole. The
-constraint half carried more than the attention half, which matches the earlier
-finding that a tool emitting a number moved a model by 42% where the same rules
-as prose moved it by 8%.
+constraint half carried more than the attention half here.
+
+**This is one skill, and the result should not be read as a rule about skills.**
+The prose-versus-tool finding earlier in this file comes from the same skill, so
+it corroborates nothing: it is the same measurement taken twice. A skill whose
+value is a place to look rather than a proof to run could easily split the other
+way, and `airgap-secrets` looks like exactly that case. Until the split is
+measured on a second skill, the honest claim is about `sweep-tests` alone.
 
 Limits on this section: two runs an arm for A, B and C, five for the thesis arm.
 Detection was measured on the whole-skill run and the thesis run, not on the two
