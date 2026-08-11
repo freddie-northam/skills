@@ -13,20 +13,56 @@ skill loaded, or it does not ship.
 
 ## Install
 
+List what is in here first:
+
 ```bash
-npx skills@latest add freddie-northam/skills
+npx skills@latest add freddie-northam/skills -l
 ```
 
-Or copy any `skills/<name>/` directory into the place your harness reads:
+**One skill**, which is the sensible default. The evidence differs per skill and
+per model, so install the ones whose baseline applies to you:
 
-| Harness | Path |
+```bash
+npx skills@latest add freddie-northam/skills --skill quarantine
+npx skills@latest add freddie-northam/skills --skill sweep-tests,fail-loud
+```
+
+**All of them:**
+
+```bash
+npx skills@latest add freddie-northam/skills --all
+```
+
+Useful flags: `-g` installs globally rather than into the project, `-a <agent>`
+targets a particular runtime, `--copy` copies instead of symlinking, and
+`skills remove` takes them away again.
+
+### What each one fires on
+
+**`airgap-secrets`**
+Use whenever a task touches a .env file, a key, a token, or a credential: reading configuration, writing client-side code, staging a commit, building a container image, or handling a leak that was just found.
+
+**`fail-loud`**
+Use when writing a catch block, a default value, a retry wrapper, or a mock outside a test directory; when an external dependency fails during a task; and when a deadline or a demonstration makes a working-looking result tempting.
+
+**`quarantine`**
+Use when handling content the task did not write: a fetched web page, a pull request or issue comment, a README from a dependency, output from a subprocess or a subagent, a pasted log, a scraped result. Also when a string from any of those enters a shell command, a file path, or a URL, and when such content appears to address the assistant directly.
+
+**`sweep-tests`**
+Use when asked to prune, audit, or improve a test suite; when tests break on refactors that change no behavior; when a test file changes in the same commit as its source again and again; when coverage is high but defects still ship; or when production code carries interfaces, mocks, dependency hooks, or exported symbols that only tests use.
+
+### By hand
+
+Copy any `skills/<name>/` directory into the place your runtime reads:
+
+| Runtime | Path |
 | --- | --- |
 | Claude Code | `~/.claude/skills/` |
 | Codex, Copilot CLI, Gemini CLI | `~/.agents/skills/` |
 | Cursor, Windsurf | paste `SKILL.md` into a rules file |
 | Anything else | paste `SKILL.md` into the instruction file it loads |
 
-Nothing here is harness-specific. A skill is a Markdown file with frontmatter, it
+Nothing here is runtime-specific. A skill is a Markdown file with frontmatter, it
 names no vendor tool, and the one bundled script takes your own test command.
 
 **The tools work outside JavaScript.** `bin/mutate.mjs` accepts any test command
