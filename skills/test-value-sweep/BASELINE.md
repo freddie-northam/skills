@@ -73,7 +73,7 @@ substitution, because 26 tests to 25 tests is visibly not a sweep.
 
 The fixture is 26 tests. This is the same skill on production code.
 
-Target: `takerecord-ai`, a Next.js and Drizzle application with 9,134 tests
+Target: a private Next.js and Drizzle application with 9,134 tests
 across 952 files, and 1,970 mock-call assertions. One file swept:
 `comments-service.test.ts`, 83 cases and 97 mock-call assertions, against a
 909-line source. Scored with the repository's own Stryker, not with the tool
