@@ -39,6 +39,9 @@ targets a particular runtime, `--copy` copies instead of symlinking, and
 
 ### What each one fires on
 
+**`answer-plainly`**
+Use when the user asks a direct question about a codebase, a result, a status, or a risk; when reporting what you did; and whenever you are about to write "significantly", "much faster", "should work", "generally", or "nearly all".
+
 **`airgap-secrets`**
 Use whenever a task touches a .env file, a key, a token, or a credential: reading configuration, writing client-side code, staging a commit, building a container image, or handling a leak that was just found.
 
@@ -74,9 +77,11 @@ fifteen operators are JavaScript-specific and simply do not fire elsewhere.
 
 Every skill in this repository holds to four rules.
 
-**1. It states a limit, not a procedure.** The model already knows the
-procedure. A skill that only supplies knowledge is training data in the wrong
-place.
+**1. It demands an answer that costs work to produce.** The model already knows
+the procedure. What it does not do unprompted is the expensive check. A skill
+that asks for a number forces the measurement that produces it; a skill that
+only forbids something changes nothing. Every skill cut from this repository
+demanded nothing that cost anything.
 
 **2. The limit is observable.** You must be able to catch an agent in a
 violation from the diff, the transcript, or a grep. A rule such as "review
@@ -103,6 +108,7 @@ opinion.
 | Skill | Forbids | Evidence |
 | --- | --- | --- |
 | [sweep-tests](./skills/sweep-tests/) | Deleting a test you cannot prove is redundant | [Measured](./skills/sweep-tests/BASELINE.md), 41 runs, **4 model families**, plus two production files |
+| [answer-plainly](./skills/answer-plainly/) | Answering from recall when the answer could be measured | [Measured](./skills/answer-plainly/BASELINE.md), 8 runs. Controls reasoned about an upgrade from memory 2 of 2; with the skill 3 of 4 installed it and tested |
 | [quarantine](./skills/quarantine/) | Acting on content the task did not write | [Measured](./skills/quarantine/BASELINE.md), 26 runs, 4 model families. Control breached 5 of 6 on the two susceptible models, 0 of 6 with the skill |
 | [airgap-secrets](./skills/airgap-secrets/) | Letting a credential reach a transcript, diff, or build context | [Measured](./skills/airgap-secrets/BASELINE.md), 26 runs, **3 model families**. Control leaked a credential in 3 of 11 valid runs. All 13 skill runs clean and flagged |
 | [fail-loud](./skills/fail-loud/) | Turning a failure into success-shaped output | [Measured](./skills/fail-loud/BASELINE.md), 14 runs, **3 model families**. Control fabricated rate data in 5 of 7 runs, 0 of 7 with the skill |

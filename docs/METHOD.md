@@ -104,6 +104,29 @@ produced a behaviour the earlier version never showed.
 Split a skill and run its halves. One skill here is carried by its proof and
 another by a single table, and knowing which changes what you may safely edit.
 
+## Predict the result before you run it
+
+Write the prediction down. A theory that is only consulted after the numbers
+arrive is not being tested.
+
+One skill here was built specifically to fail. The theory said a skill adds
+value only by supplying a procedure the model lacks, and that skill supplies
+none: it asks for a direct answer and a number instead of an adjective. It was
+run to falsify the theory.
+
+It worked. Faced with a question its training could not settle, three of four
+runs installed the dependency and tested it, while the controls reasoned from
+recall. The demand for a fact induced the verification, though no verification
+was named. The theory was wrong and the prediction on the record is what made
+that legible.
+
+## Do not reward the lesser good outcome
+
+The first oracle for that fixture scored "the agent admitted it did not know" as
+success. The best runs did better than that: they went and found out. The oracle
+would have marked all three as failures. Rank the outcomes before you write the
+check, and put resolution above admission.
+
 ## Cut what loses
 
 A skill that does not beat its control does not ship, however well written.
