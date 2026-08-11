@@ -150,6 +150,44 @@ sweep with no gate is a promise.
 If you adopt one thing here, adopt the gate. `bin/mutate.mjs` exists for
 repositories with no mutation runner, which is most of them.
 
+## Which part of the skill does the work
+
+The skill was split into its parts and each was run on a real 86-test file in a
+private production repository, subject `server/services/members.ts`, 443
+mutants, baseline detection 365.
+
+| Arm | Runs | Tests after | Reduction | Detection |
+| --- | --- | --- | --- | --- |
+| no skill | 2 | 86.0 | 0% | nothing was deleted |
+| thesis sentence only | 5 | 81.2 | -5.6% | **fell by 3 mutants** |
+| attention only, the Delete and Keep lists | 2 | 79.0 | -8.1% | not measured |
+| constraint only, the gate and the proof | 2 | 73.5 | -14.5% | not measured |
+| **whole skill** | 2 | **70.5** | **-18.0%** | **held exactly** |
+
+**Without the skill, nothing is deleted at all.** Both control runs read "clean
+it up" as *tidy*: they extracted helpers, unified assertion style, fixed
+test-order leakage, and kept all 86 tests. That is good work and it is not a
+sweep. One control improved the mutation score while doing it.
+
+**The proof is what licenses depth.** The whole skill removed nearly three times
+as many tests as the thesis sentence alone, and detection held exactly. The
+thesis alone removed fewer and detection still fell by three mutants, because
+nothing required a proof before deleting.
+
+That is the opposite of the intuition that a stronger rule makes an agent
+timid. Here the rule is what made aggressive deletion safe, and its absence made
+deletion both shallow and lossy.
+
+**Attention and constraint compose.** Neither half reached the whole. The
+constraint half carried more than the attention half, which matches the earlier
+finding that a tool emitting a number moved a model by 42% where the same rules
+as prose moved it by 8%.
+
+Limits on this section: two runs an arm for A, B and C, five for the thesis arm.
+Detection was measured on the whole-skill run and the thesis run, not on the two
+half arms. The reduction figures are reliable; the ordering of A against B is
+suggestive and no more.
+
 ## Honest limits
 
 - Opus and Fable were measured on the prose version only. Both already reached
