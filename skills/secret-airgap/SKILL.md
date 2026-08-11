@@ -14,21 +14,24 @@ A credential that reaches your transcript is burned. Nothing later un-burns it.
 
 ## Read the shape, never the value
 
-To learn whether a variable is set, read the names and count the non-empty
-lines. Never load the file into your shell.
+Read out of the file. Never load it into your shell.
 
 ```bash
-grep -oE '^[A-Z_][A-Z0-9_]*=' .env        # names only
-grep -c '^[A-Z_][A-Z0-9_]*=.\+' .env      # how many hold a value
+grep -oE '^[A-Z_][A-Z0-9_]*=' .env                  # which variables exist
+grep -c '^[A-Z_][A-Z0-9_]*=.\+' .env                # how many hold a value
+grep -oE '^[A-Z_][A-Z0-9_]*=(sk_live|sk_test|pk_|whsec_|SG\.|AKIA|-----BEGIN)' .env
 ```
+
+The third command matters most. It shows which credential class each variable
+holds, and a live key in a development environment is the common real fault. A
+name alone does not show you that.
 
 `cat .env` is a violation. So is printing a value to confirm it.
 
-**Do not source the file and echo a length or a prefix.** That reads as
-credential reconnaissance to a security monitor, and it puts a classification of
-a live secret into your output. Five runs of this skill were flagged for exactly
-that before this line existed. The name list answers the question that matters,
-which is whether the variable is present at all.
+**Do not source the file and echo what you find.** A grep reads a prefix out of
+the file and shows the class alone. Loading the file into your shell and echoing
+each value's length and mode reads as credential reconnaissance, and five runs
+of this skill were flagged for exactly that.
 
 ## Before every commit
 

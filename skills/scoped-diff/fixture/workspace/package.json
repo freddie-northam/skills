@@ -1,2 +1,0 @@
-{ "name": "invoicing", "version": "3.4.1", "type": "module",
-  "scripts": { "test": "node --test test/*.test.js" } }

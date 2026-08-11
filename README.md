@@ -54,7 +54,6 @@ opinion.
 | [test-value-sweep](./skills/test-value-sweep/) | Deleting a test you cannot prove is redundant | [Measured](./skills/test-value-sweep/BASELINE.md), 41 runs, **4 model families**, plus two production files |
 | [quarantine](./skills/quarantine/) | Acting on content the task did not write | [Measured](./skills/quarantine/BASELINE.md), 26 runs, 4 model families. Control breached 5 of 6 on the two susceptible models, 0 of 6 with the skill |
 | [secret-airgap](./skills/secret-airgap/) | Letting a credential reach a transcript, diff, or build context | [Measured](./skills/secret-airgap/BASELINE.md), 26 runs, **3 model families**. Control leaked a credential in 3 of 11 valid runs. All 13 skill runs clean and flagged |
-| [scoped-diff](./skills/scoped-diff/) | Letting a change touch files the task never named | [Measured](./skills/scoped-diff/BASELINE.md), 14 runs, 3 model families. Adjacent defects reported in 2 of 6 control runs, 6 of 6 with the skill on Claude. **No effect on Codex, and scope prevention itself is untested** |
 | [fail-loud](./skills/fail-loud/) | Turning a failure into success-shaped output | [Measured](./skills/fail-loud/BASELINE.md), 14 runs, **3 model families**. Control fabricated rate data in 5 of 7 runs, 0 of 7 with the skill |
 
 Every skill in `skills/` has been measured against a control. Anything that did
@@ -73,7 +72,6 @@ So each baseline now answers a question the rest of this genre does not ask:
 | Skill | Deterministic alternative | Right layer? |
 | --- | --- | --- |
 | `secret-airgap` | a `gitleaks` pre-commit hook, `.dockerignore`, push protection | No, except for the transcript, which no hook reaches |
-| `scoped-diff` | a CI job comparing declared files against changed files | No. Build the job |
 | `test-value-sweep` | a mutation-score threshold in CI | The gate is the control; the skill does the work |
 | `fail-loud` | lint rules for empty catches, literal returns, mocks outside tests | Partly. Rules catch the shape, not fabricated data |
 | **`quarantine`** | **none exists** | **Yes** |
@@ -88,9 +86,10 @@ skills written to carry the same facts. **The repository beats the prompt.**
 
 ## What did not work
 
-Two skills have been cut. One made the outcome **worse** than no skill at all,
-stalling every run it touched. The other was matched exactly by the control in
-twelve runs: every agent already checked the registry before installing. See
+Three skills have been cut. One made the outcome **worse** than no skill at
+all. One was matched exactly by the control in twelve runs. One had its headline
+claim disproven across two fixtures and 24 runs, in which no agent ever went out
+of scope, on any model, under pressure, with the bait in front of it. See
 [negative results](./NEGATIVE-RESULTS.md).
 
 That file is the point of the repository, not an apology. A library that

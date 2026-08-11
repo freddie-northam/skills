@@ -1,2 +1,0 @@
-{ "name": "billing", "version": "5.2.0", "type": "module",
-  "scripts": { "test": "node --test test/*.test.js" } }
