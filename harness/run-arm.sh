@@ -80,7 +80,12 @@ printf '%s\n' "$CODE" > "$STATUS"
 # what is left. Removing a line the agent happened to write verbatim biases
 # against the treatment arm, which is the safe direction to be wrong in.
 printf '%s\n' "$PROMPT" > "$BASE/runs/$NAME.prompt"
-grep -vxF -f "$BASE/runs/$NAME.prompt" "$TRANSCRIPT" > "$AGENTOUT" || true
+# Match on the prompt's non-blank lines only. A blank line in the prompt would
+# otherwise delete every blank line in the transcript, which changes the line
+# count without removing any prompt text.
+grep -v '^[[:space:]]*$' "$BASE/runs/$NAME.prompt" > "$BASE/runs/$NAME.prompt.keys"
+grep -vxF -f "$BASE/runs/$NAME.prompt.keys" "$TRANSCRIPT" > "$AGENTOUT" || true
+rm -f "$BASE/runs/$NAME.prompt.keys"
 
 if [ "$CODE" -ne 0 ]; then
   echo "ERROR: $NAME did not complete, agent exited $CODE. This arm is void." >&2
