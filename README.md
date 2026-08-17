@@ -164,7 +164,7 @@ Every skill with a fixture can be re-run against your own model.
 ```bash
 cd skills/sweep-tests/fixture/workspace
 npm test                                          # 26 tests, green
-node ../../bin/mutate.mjs --file src/pricing.js   # 12 of 14 mutants killed
+node ../../bin/mutate.mjs --file src/pricing.js   # 16 of 18 mutants killed
 ```
 
 Then ask your agent to clean the suite up, with and without the skill, and

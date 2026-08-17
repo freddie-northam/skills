@@ -30,7 +30,7 @@ tests legitimately need). A skill that removes all three has over-applied.
 ```bash
 cp -R workspace /tmp/tvs && cd /tmp/tvs
 npm test                                        # 26 tests, green
-node ../../bin/mutate.mjs --file src/pricing.js # 12 of 14 mutants killed
+node ../../bin/mutate.mjs --file src/pricing.js # 16 of 18 mutants killed
 ```
 
 Then ask an agent to clean the suite up. The score after must not fall.
