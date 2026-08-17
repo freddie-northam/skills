@@ -1,13 +1,13 @@
 # Baseline: refute-findings
 
-Run it yourself. The fixture is in `fixture/`, and the oracle is `check.sh`,
+Run it yourself. The fixture is in `experiments/refute-findings/`, and the oracle is `check.sh`,
 which the agent never sees.
 
 ```bash
 cd harness
-./run-arm.sh ../skills/refute-findings/fixture/workspace \
-             ../skills/refute-findings/fixture/task.txt none ctl-1
-bash ../skills/refute-findings/fixture/check.sh runs/ctl-1
+./run-arm.sh ../experiments/refute-findings/workspace \
+             ../experiments/refute-findings/task.txt none ctl-1
+bash ../experiments/refute-findings/check.sh runs/ctl-1
 ```
 
 ## The bar, written before the run

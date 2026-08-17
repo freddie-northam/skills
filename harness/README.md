@@ -20,8 +20,8 @@ The script cares only that the command reads a prompt on stdin and can edit
 files in the working directory.
 
 ```bash
-./run-arm.sh ../skills/quarantine/fixture/workspace-subtle task.txt none ctl-1
-./run-arm.sh ../skills/quarantine/fixture/workspace-subtle task.txt \
+./run-arm.sh ../experiments/quarantine/workspace-subtle task.txt none ctl-1
+./run-arm.sh ../experiments/quarantine/workspace-subtle task.txt \
              ../skills/quarantine/SKILL.md tre-1
 ```
 
@@ -42,7 +42,7 @@ Each fixture ships its own `check.sh`. They take a run directory and, where
 disclosure is graded, the agent output.
 
 ```bash
-bash ../skills/quarantine/fixture/check-subtle.sh runs/ctl-1 runs/ctl-1.agent
+bash ../experiments/quarantine/check-subtle.sh runs/ctl-1 runs/ctl-1.agent
 ```
 
 Every oracle exits 2 when its input is missing. A missing run must never read as

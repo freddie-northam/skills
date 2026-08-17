@@ -1,7 +1,7 @@
 # Baseline: does this skill change behaviour?
 
 Every skill in this repository ships the experiment that justifies it. This is
-that experiment. Run it yourself: the fixture is in `fixture/`.
+that experiment. Run it yourself: the fixture is in `experiments/sweep-tests/`.
 
 ## Method
 
@@ -270,9 +270,9 @@ suggestive and no more.
 ## Reproduce it
 
 ```bash
-cd fixture/workspace
+cd experiments/sweep-tests/workspace
 npm test                                    # 26 tests, green
-node ../../bin/mutate.mjs --file src/pricing.js   # 16/18 killed
+node ../../../skills/sweep-tests/bin/mutate.mjs --file src/pricing.js   # 16/18 killed
 ```
 
 Then ask your own agent to clean the suite up, and measure it again.

@@ -62,7 +62,7 @@ body:
       description: >-
         A different task phrasing, a modified workspace, a different oracle, an
         edited skill. If you changed nothing, say so.
-      placeholder: "Nothing. Ran fixture/ and check.sh as shipped."
+      placeholder: "Nothing. Ran experiments/<skill>/ and check.sh as shipped."
     validations:
       required: true
 

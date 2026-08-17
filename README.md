@@ -175,9 +175,9 @@ for copying vocabulary rather than for finding anything. CI runs the same script
 Then re-run a fixture against your own model.
 
 ```bash
-cd skills/sweep-tests/fixture/workspace
+cd experiments/sweep-tests/workspace
 npm test                                          # 26 tests, green
-node ../../bin/mutate.mjs --file src/pricing.js   # 16 of 18 mutants killed
+node ../../../skills/sweep-tests/bin/mutate.mjs --file src/pricing.js   # 16 of 18 mutants killed
 ```
 
 Then ask your agent to clean the suite up, with and without the skill, and

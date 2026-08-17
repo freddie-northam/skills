@@ -40,11 +40,11 @@ echo "== an oracle must not score the skill's own vocabulary =="
 # the treatment arm can ever match it. Four patterns here once failed this.
 # Single generic words are skipped: they carry no signal either way.
 STOP='instruction|instructions|credential|source|record|report|result|missing|written|create|write'
-for oracle in skills/*/fixture/check*.sh; do
+for oracle in experiments/*/check*.sh; do
   [ -f "$oracle" ] || continue
-  skill="$(dirname "$(dirname "$oracle")")/SKILL.md"
+  name=$(basename "$(dirname "$oracle")")
+  skill="skills/$name/SKILL.md"
   [ -f "$skill" ] || continue
-  name=$(basename "$(dirname "$(dirname "$oracle")")")
   pats=$(grep -oE "grep -[a-zA-Z]*E [\"'][^\"']+[\"']" "$oracle" \
          | sed -E "s/grep -[a-zA-Z]*E [\"']//; s/[\"']$//" \
          | tr '|' '\n' \
@@ -64,7 +64,7 @@ echo "== fixture suites that are meant to pass =="
 # Not every fixture is green. fail-loud's dependency is unreachable on purpose,
 # which is the whole fixture, and answer-plainly's workspace has uninstalled
 # dependencies by design. Only these two assert a green suite.
-for ws in skills/sweep-tests/fixture/workspace skills/refute-findings/fixture/workspace; do
+for ws in experiments/sweep-tests/workspace experiments/refute-findings/workspace; do
   [ -d "$ws" ] || continue
   # Capture first, then match. Piping straight into `grep -q` under pipefail
   # reports a failure that never happened: grep exits on the first match, npm
@@ -76,7 +76,7 @@ done
 
 echo
 echo "== the published mutation score reproduces =="
-WS=skills/sweep-tests/fixture/workspace
+WS=experiments/sweep-tests/workspace
 if [ -d "$WS" ]; then
   # Mutate a copy. The runner rewrites its target file and restores it, so
   # running it against the tracked fixture leaves a window in which the working
@@ -88,7 +88,7 @@ if [ -d "$WS" ]; then
   score=$( cd "$TMP" && node "$MUTBIN" --file src/pricing.js --test "npm test" 2>&1 \
            | grep -oE 'Detection: [0-9]+/[0-9]+' | head -1 | grep -oE '[0-9]+/[0-9]+' )
   rm -rf "$TMP"
-  claimed=$(grep -oE '[0-9]+ of [0-9]+ mutants killed' skills/sweep-tests/fixture/README.md 2>/dev/null \
+  claimed=$(grep -oE '[0-9]+ of [0-9]+ mutants killed' experiments/sweep-tests/README.md 2>/dev/null \
             | head -1 | sed -E 's/ of /\//; s/ mutants killed//')
   if [ -n "$score" ] && [ "$score" = "$claimed" ]; then ok "fixture README claims $claimed, measured $score"
   else bad "fixture README claims ${claimed:-none}, measured ${score:-none}"; fi
