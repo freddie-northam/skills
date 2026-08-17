@@ -76,7 +76,7 @@ condition lost detection.** The cut costs nothing.
 >
 > **Re-run at 18 mutants. The concern does not materialise.**
 >
-> Four arms on `gpt-5.6-sol` through `codex exec`, current skill, scoring the
+> Five arms on `gpt-5.6-sol` through `codex exec`, current skill, scoring the
 > repaired tool. Mutant identities recorded before and after each sweep and
 > compared without line numbers, because seam removal shifts every line.
 >
@@ -87,6 +87,7 @@ condition lost detection.** The cut costs nothing.
 > | sw-2 | **7** | 18 | 16 | **0** | 0 |
 > | sw-3 | **7** | 18 | 16 | **0** | 0 |
 > | sw-4 | **9** | 18 | 16 | **0** | 0 |
+> | sw-5 | **7** | 18 | 16 | **0** | 0 |
 >
 > Every sweep preserved all 18 mutants, the same 16 kills and the same two
 > survivors, `< -> <=` and `25 -> 26`. Nothing disappeared and nothing changed
