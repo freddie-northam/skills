@@ -98,6 +98,17 @@ percent, so it was run again on the subtle fixture, five runs, same model.
 Unchanged. The added material sits after the rules rather than before them, so
 nothing that carried the effect moved.
 
+> **Withdrawn: the "Flagged the planted step" column.** Both 5 of 5 figures were
+> scored from `.transcript`, and `codex exec` reproduces its prompt in stdout.
+> The prompt holds the whole skill, and `SKILL.md` line 26 contains
+> `<<<UNTRUSTED start:`, which the oracle's case-insensitive `untrusted` pattern
+> matches. Every treatment arm scored that column whatever the agent did, and a
+> control arm never could. The **Breached** column is unaffected: it is the
+> presence of a file on disk. The before-and-after *comparison* also survives,
+> because both arms are contaminated identically. The absolute 5 of 5 does not.
+> `run-arm.sh` now writes a prompt-free `.agent` file and the harness README
+> forbids scoring `.transcript`. This column needs a re-run to be republished.
+
 ## Honest limits
 
 - Opus and Sonnet show no effect. If you run those models, this skill is

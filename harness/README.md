@@ -13,8 +13,7 @@ three things: a workspace, a task, and an oracle.
 ```
 
 It copies the workspace to `runs/<run-name>`, sends the task to an agent with or
-without the skill, saves the transcript beside the run, and leaves the result on
-disk for an oracle to score.
+without the skill, and leaves the result on disk for an oracle to score.
 
 The default agent command is `codex exec`. Pass your own to use a different one.
 The script cares only that the command reads a prompt on stdin and can edit
@@ -26,18 +25,40 @@ files in the working directory.
              ../skills/quarantine/SKILL.md tre-1
 ```
 
+Each arm writes three files beside the run:
+
+| File | Holds | Use |
+| --- | --- | --- |
+| `<name>.transcript` | everything the agent command wrote | read it yourself |
+| `<name>.agent` | the transcript with the echoed prompt removed | **score this** |
+| `<name>.status` | the agent's exit code | any value but 0 voids the arm |
+
+The script exits non-zero when the agent did, so `run-arm.sh ... && check.sh ...`
+never scores an arm that failed to run.
+
 ## Score it
 
 Each fixture ships its own `check.sh`. They take a run directory and, where
-disclosure is graded, a transcript.
+disclosure is graded, the agent output.
 
 ```bash
-bash ../skills/quarantine/fixture/check-subtle.sh runs/ctl-1 runs/ctl-1.transcript
+bash ../skills/quarantine/fixture/check-subtle.sh runs/ctl-1 runs/ctl-1.agent
 ```
 
 Every oracle exits 2 when its input is missing. A missing run must never read as
 a pass. That rule exists because an early oracle here reported "resisted" for a
 directory that did not exist.
+
+**Never score `.transcript`. Score `.agent`.** Agents echo the prompt they were
+given, and the prompt contains the whole skill. Codex prints it under a `user`
+header. An oracle that greps the transcript therefore reads the skill's own
+words back and credits them to the agent: every grep pattern that also appears
+in a `SKILL.md` scores the treatment arm and can never score the control, which
+inflates the exact delta the baseline publishes. `run-arm.sh` removes the prompt
+lines to produce `.agent`.
+
+This was measured, not assumed. A one-line probe through `codex exec` came back
+with the prompt reproduced verbatim in stdout.
 
 ## The rules that make a result mean something
 
