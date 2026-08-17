@@ -98,12 +98,58 @@ condition lost detection.** The cut costs nothing.
 > `formatMoney`, and `SKILL.md` names snapshot tests as deletion candidates. No
 > arm took the bait.
 >
-> **What this is not.** These are new arms on a fourth model. `gpt-5.6-sol` is
-> not in the table above, so this does not retroactively re-measure the Opus,
-> Fable or Sonnet rows. It shows that a sweep of this fixture under this skill
-> holds at 18 mutants, which is direct evidence against the failure the narrower
-> tool could have hidden. Re-running the three published models would close it
-> completely.
+> **Opus and Sonnet, re-run at 18 mutants against v4.** The table above says
+> neither had been measured against v4. Now both have, three arms each.
+>
+> | Model | Arms | Mean tests | Change | Detection | Baseline mutants lost |
+> | --- | --- | --- | --- | --- | --- |
+> | Opus, v4 | 12, 8, 9 | **9.7** | **-63%** | 18/16 every arm | **0** |
+> | Sonnet, v4 | 7, 14, 14 | **11.7** | **-55%** | 18/16 every arm | **0** |
+>
+> **Detection holds at 18 mutants on all three families**, 16 arms in total
+> across Codex, Opus and Sonnet, with no mutant lost or status-changed in any of
+> them. The concern the narrower tool could have hidden does not occur.
+>
+> **Sonnet reproduces its published figure.** 11.7 against the 11.8 recorded for
+> the tool-shipping v2. The `maskText` defect did not depress that row. Sonnet's
+> spread is wide, 7 to 14 across three arms, and the mean hides it.
+>
+> Fable is not reachable through the runner used here and was not re-run.
+>
+> One Opus arm went past what the skill asks. It observed that the tool's 18
+> mutants never reach `normalizeCode` and reach `isExpired` with a single already
+> surviving mutant, so a passing score there would be vacuous. It hand-wrote 10
+> mutants for the unreachable behaviour and reported 9 of 10 killed before and
+> after with the identical survivor. That is METHOD.md's "verify a tool with
+> something other than that tool", applied unprompted, to the blind spot this
+> very section documents.
+
+> **A harness defect found while re-running these, and a limit it puts on the
+> rows above.**
+>
+> This skill tells the agent to run `<skill-dir>/bin/mutate.mjs`. `run-arm.sh`
+> copied only the workspace into a run and never supplied that tool.
+>
+> Codex found it anyway by walking up the repository tree. A runner started with
+> its working directory at the run did not, and correctly refused to delete a
+> test it could not prove redundant: "Deleting on a read-and-judge basis is the
+> exact failure mode the skill exists to prevent, so I stopped." Under the old
+> harness that arm scored 26 tests to 26 and read as a total failure to sweep. It
+> was the skill working.
+>
+> A second arm hit the same wall from the other side, with a runner permitted to
+> edit files but not to execute them, so it could run neither the suite nor the
+> checker.
+>
+> `run-arm.sh` now copies a skill's `bin/` into the run as `.skill-bin/` and says
+> so in the prompt. Control arms do not get it, because the tool ships with the
+> skill and a user without the skill does not have it.
+>
+> **What this means for the rows above.** An arm's behaviour depended on its
+> runner's filesystem reach and execution permission, not only on the model. The
+> Opus and Sonnet rows in the main table predate this fix and cannot be
+> attributed cleanly to the models until they are re-run, which is what the v4
+> arms in this section now are. The Fable rows have the same caveat and no re-run.
 
 ## The finding that matters most
 

@@ -40,11 +40,31 @@ cp -R "$WS"/. "$RUN"/
 
 PROMPT=$(cat "$TASKFILE")
 if [ "$SKILL" != "none" ]; then
+  # A skill may name a tool it expects to invoke. Put that tool in the run and
+  # tell the agent where it is.
+  #
+  # Without this the experiment is not controlled. sweep-tests tells the agent to
+  # run <skill-dir>/bin/mutate.mjs, and nothing supplied it. Codex found the file
+  # anyway by walking up the repository tree; Claude, started with cwd at the run
+  # directory, did not, and correctly refused to delete a test it could not prove
+  # redundant. That difference was the runner's filesystem reach, not the model's
+  # behaviour, and it was being read as the latter.
+  SKILLBIN="$(cd "$(dirname "$SKILL")" && pwd)/bin"
+  if [ -d "$SKILLBIN" ]; then
+    mkdir -p "$RUN/.skill-bin"
+    cp -R "$SKILLBIN"/. "$RUN/.skill-bin"/
+    TOOLNOTE="
+
+The skill's tools are in \`.skill-bin/\` in your working directory. Where the
+skill writes \`<skill-dir>/bin/\`, read \`.skill-bin/\`."
+  else
+    TOOLNOTE=""
+  fi
   PROMPT="You have the following skill loaded. Follow it.
 
 <skill>
 $(cat "$SKILL")
-</skill>
+</skill>$TOOLNOTE
 
 ---
 
