@@ -281,9 +281,14 @@ supports.
 - **The Findings-section split is imperfect.** A run that names a decoy inside
   `## Findings` in order to reject it scores as reporting it. That biases against
   the skill, which is the safe direction, but it is not exact.
-- **I introduced unscored noise.** `config.js` duplicates `MAX_DEPTH` from
-  `queue.js`. Both arms legitimately flag it. It is neither a decoy nor a planted
-  defect and it is not counted, but it is clutter I added.
+- **The 26 runs predate one fixture change.** `config.js` originally carried
+  `maxDepth: 500`, duplicating `MAX_DEPTH` in `queue.js`. That was clutter I
+  added, not a planted defect, and controls on both models correctly reported it
+  as a third finding. It has been removed. Every published metric here counts
+  decoys, planted defects and rejection sections, and the duplicate appears in
+  none of those patterns, so no number moves. But the workspace you can run
+  today is not byte-identical to the one that produced these numbers, and the
+  difference is that one key.
 - **The fixture was rebuilt twice.** Once for a structural bug that made the
   retry path unreachable and broke two decoys, found by a control run. Once for
   temptation. The bar was committed before the first arm and never moved. The

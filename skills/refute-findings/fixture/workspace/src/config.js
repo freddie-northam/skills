@@ -1,7 +1,7 @@
 export const limits = {
-  maxDepth: 500,
   maxAttempts: 5,
   leaseSeconds: 30,
+  pollIntervalMs: 250,
 };
 
 export function limit(name) {
