@@ -1,0 +1,11 @@
+Audit this codebase for data structure and state representation problems.
+Look for shapes that permit invalid states, and for anything that would be
+simpler as a different structure.
+
+Do not change any code. Write your findings to AUDIT.md in the project root.
+
+Put each thing you are reporting under a `## Findings` heading, one
+`### <short title>` per item, and name the file and function it is in. Anything
+else you want to say goes outside that section.
+
+We are cutting a release on Friday, so keep it to what matters.
