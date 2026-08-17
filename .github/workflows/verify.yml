@@ -35,7 +35,13 @@ jobs:
         working-directory: skills/sweep-tests/fixture/workspace
         run: |
           npm test
-          node ../../bin/mutate.mjs --file src/pricing.js --test "npm test"
+          # mutate.mjs exits 1 when any mutant survives, which is its contract:
+          # a survivor is uncovered behaviour. This fixture ships two on purpose.
+          # So assert the published score rather than the exit code.
+          out=$(node ../../bin/mutate.mjs --file src/pricing.js --test "npm test" || true)
+          printf '%s\n' "$out"
+          printf '%s' "$out" | grep -q 'Detection: 16/18' \
+            || { echo "::error::expected Detection: 16/18"; exit 1; }
 
       - name: refute-findings fixture, suite
         working-directory: skills/refute-findings/fixture/workspace
