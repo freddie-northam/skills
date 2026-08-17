@@ -170,9 +170,9 @@ The comment stating that requirement was removed in v2. The only remaining
 evidence is the test. The skill run read the test. The control did not, and
 reported a non-defect as high severity in a release week.
 
-### What is actually measured
+### What is actually measured, on `gpt-5.6-sol`
 
-Across all 20 runs, on both fixtures:
+Across all 20 Codex runs, on both fixtures:
 
 | Measure | Control | Skill |
 | --- | --- | --- |
@@ -181,10 +181,52 @@ Across all 20 runs, on both fixtures:
 | Found both real defects | every run | every run |
 | Mean report length, v1 | 33.0 lines | 46.4 lines |
 
-**The measured claim is legibility, not precision.** No control in twenty runs
-wrote down what it considered and rejected. Every skill run did, with artifacts:
-caller counts, `test/wire.roundtrip.test.js:8-16`, `src/worker.js:13`, a computed
-maximum delay of 1600ms.
+**The measured claim is legibility, not precision.** No Codex control in twenty
+runs wrote down what it considered and rejected. Every skill run did, with
+artifacts: caller counts, `test/wire.roundtrip.test.js:8-16`, `src/worker.js:13`,
+a computed maximum delay of 1600ms.
+
+### On Claude the control already does it, so the skill adds nothing
+
+Three arms of six so far, v2 fixture, `claude -p`. **This section is partial.**
+
+| Measure | Codex control | Claude control |
+| --- | --- | --- |
+| Wrote a rejection section | **0 of 8** | **2 of 2** |
+| Killed the wire decoy with the test as artifact | never | both |
+| Reported a decoy | 2 of 8 | 0 of 2 |
+
+`cc-c1` and `cc-c2` are controls. Neither had a skill loaded, which is verified:
+their prompt is the eleven-line task, with no `<skill>` block and no occurrence
+of "four killers". Both wrote a refutation section anyway, titled "Candidates
+that died" and "Candidates I killed". `cc-c2` added a third section, "Reviewed
+with nothing to claim", which is coverage reporting the skill does not even ask
+for. Both cited `wire.roundtrip.test.js:5` and killed the decoy that two Codex
+controls reported as a high-severity defect.
+
+So the effect this skill was measured on is **absent on Claude, because the
+control is already there.** That is the same shape as `sweep-tests`, which cuts
+67 percent on Fable and 8 percent on Sonnet.
+
+If you run Claude, this skill is insurance, not a fix. Install it for Codex.
+
+### A correction to this document's own instrument
+
+The oracle originally grepped the whole `## Findings` section. A Claude run
+described how the parallel-array defect pins a job at `backoffMs(0)` forever,
+which is a correct account of a real defect, and the grep counted it as
+reporting the backoff decoy. Scoring only headings then over-corrected: a
+genuine report titled "Independent envelope flags permit contradictory lifecycle
+states" names the decoy without using any of its identifiers.
+
+The oracle now splits the section into findings and scores each one's heading
+plus the first few lines, which is where a report names its file and function.
+
+**Every arm above was re-scored with the corrected oracle and the Codex numbers
+are unchanged**: 0.2 and 0.0 decoys an arm on v1, 0.67 and 0.0 on v2. The
+correction moved only the Claude arms, which had not been published. The
+mis-scored Claude control was reported once in conversation as having fallen for
+a decoy. It had rejected it.
 
 The skill runs also killed candidates nobody planted, and killed them correctly:
 unstable drain order, killed by convention, "ECMAScript specifies stable
@@ -208,10 +250,17 @@ supports.
 - **Recall was never under pressure.** Both arms found both real defects in all
   20 runs. This fixture cannot detect a recall cost, and the skill's demand for
   four artifacts is exactly the kind of thing that would cause one.
-- **One model.** `gpt-5.6-sol` through `codex exec`. Nothing here says how this
-  behaves on Claude or any other family. Two skills in this repository work on
-  one family and add nothing on another.
-- **Small n.** Five pairs on v1, three on v2, two edit-regression arms.
+- **Two models, and they disagree.** The whole effect is on `gpt-5.6-sol`. On
+  Claude the control writes the rejection section unprompted, so the skill adds
+  nothing measurable. Do not read the headline as a general result.
+- **The Claude arms are three of six.** The remaining arms may change that
+  section. It is marked partial in place rather than held back.
+- **Small n.** Five pairs on v1, three on v2, two edit-regression arms, and so
+  far one and a half pairs on Claude.
+- **The oracle was corrected after the runs.** It scored prose where it should
+  have scored each finding's subject. Everything was re-scored and the Codex
+  numbers did not move, but the instrument was wrong for part of this
+  document's history and a reader should know that.
 - **The oracle greps a report, not a disk.** Unavoidable: an audit's output *is*
   a report. `answer-plainly` has the same property and ships no `check.sh` at
   all. It is only sound here because the harness now strips the prompt from the

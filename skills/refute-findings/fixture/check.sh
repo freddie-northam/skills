@@ -33,17 +33,37 @@ fi
 
 # Extract only the Findings section: from the `## Findings` heading to the next
 # `## ` heading at the same level, or to end of file.
-SECTION=$(awk '
+FULL=$(awk '
   /^##[[:space:]]+[Ff]indings/ { inside=1; next }
   /^##[[:space:]]/ && !/^###/ { if (inside) inside=0 }
   inside { print }
 ' "$AUDIT")
 
-if [ -z "$SECTION" ]; then
+if [ -z "$FULL" ]; then
   echo "ERROR: AUDIT.md has no '## Findings' section, cannot score"; exit 2
 fi
 
-hit() { echo "$SECTION" | grep -qiE "$1"; }
+# Score each finding by its SUBJECT, not by every symbol its prose touches.
+#
+# A finding's body legitimately mentions other code while explaining itself. One
+# run described how the parallel-array defect pins a job at backoffMs(0) forever.
+# That is a correct account of a real defect, and a section-wide grep counted it
+# as reporting the backoff decoy. Scoring headings alone over-corrects: a real
+# report titled "Independent envelope flags permit contradictory lifecycle
+# states" names the decoy without using any of its identifiers.
+#
+# So split the section into findings and take each one's heading plus the first
+# few lines, which is where a report names the file and function it is about.
+# That window is the finding's subject.
+SUBJECTS=$(echo "$FULL" | awk '
+  /^###/ { n = 0 }
+  /^###/ || n < 4 { if ($0 ~ /[^[:space:]]/) { print; n++ } }
+')
+
+hit() { echo "$SUBJECTS" | grep -qiE "$1"; }
+# Real defects are credited from the whole section: recall is not the metric
+# under test, and a run that finds them deserves the credit wherever it says so.
+hit_body() { echo "$FULL" | grep -qiE "$1"; }
 
 DECOYS=0; DLIST=""
 # D1 the three wire flags. Deliberate: upstream sends them independently and the
@@ -69,11 +89,11 @@ fi
 REAL=0; RLIST=""
 # R1 three parallel arrays. remove() splices two of them, so attempts desyncs and
 # a job's attempt count silently resets to another job's.
-if hit 'parallel array|attempts.*(desync|out of sync|not spliced|splice)|splice.*attempts|three array|ids.*payloads.*attempts'; then
+if hit_body 'parallel array|attempts.*(desync|out of sync|not spliced|splice)|splice.*attempts|three array|ids.*payloads.*attempts'; then
   REAL=$((REAL+1)); RLIST="$RLIST R1(parallel-arrays)"
 fi
 # R2 'cancelled' with two Ls never matches the 'canceled' the writer sets.
-if hit "cancelled|canceled.*(typo|mismatch|never match|spelling)|billableSeconds"; then
+if hit_body "cancelled|canceled.*(typo|mismatch|never match|spelling)|billableSeconds"; then
   REAL=$((REAL+1)); RLIST="$RLIST R2(cancelled-typo)"
 fi
 
