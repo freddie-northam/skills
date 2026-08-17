@@ -25,6 +25,23 @@ files in the working directory.
              ../skills/quarantine/SKILL.md tre-1
 ```
 
+**A skill's tools travel with it.** If `skills/<name>/bin/` exists, a treatment
+arm gets it as `.skill-bin/` inside the run, and the prompt says where it is. A
+control arm does not, because the tool ships with the skill and a user without
+the skill does not have one.
+
+This exists because `sweep-tests` tells the agent to run
+`<skill-dir>/bin/mutate.mjs` and nothing supplied it. Codex found the file by
+walking up the repository tree. A runner confined to its working directory did
+not, and correctly refused to delete a test it could not prove redundant. The
+arm scored 26 tests to 26 and read as a failure to sweep. It was the skill
+working. Whether an arm could obey its own skill depended on the runner, which
+is not a controlled experiment.
+
+The runner also needs permission to execute. An agent that may edit files but
+not run them cannot run the suite or the checker, and will stop for the same
+correct reason.
+
 Each arm writes three files beside the run:
 
 | File | Holds | Use |
