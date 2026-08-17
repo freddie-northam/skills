@@ -159,7 +159,20 @@ publishes only its wins is asserting, not measuring.
 
 ## Verify it yourself
 
-Every skill with a fixture can be re-run against your own model.
+Check the repository's own claims first. It runs no agent, so it costs nothing
+and needs no key:
+
+```bash
+./harness/verify.sh
+```
+
+It checks the structure of every skill, runs the fixture suites that are meant
+to pass, reproduces the published mutation score, and greps every oracle pattern
+against the `SKILL.md` it scores. That last one exists because four patterns here
+once matched words the skill itself prescribes, which scored the treatment arm
+for copying vocabulary rather than for finding anything. CI runs the same script.
+
+Then re-run a fixture against your own model.
 
 ```bash
 cd skills/sweep-tests/fixture/workspace
@@ -168,7 +181,9 @@ node ../../bin/mutate.mjs --file src/pricing.js   # 16 of 18 mutants killed
 ```
 
 Then ask your agent to clean the suite up, with and without the skill, and
-measure again. Post your numbers.
+measure again. **Post your numbers**, especially if they disagree with ours.
+There is an [issue template](../../issues/new?template=report-a-result.yml) that
+asks for exactly what a result needs and nothing else.
 
 The method, including how to build a fixture that actually tempts an agent, is
 in [docs/METHOD.md](./docs/METHOD.md).

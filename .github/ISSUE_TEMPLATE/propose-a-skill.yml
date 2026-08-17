@@ -1,0 +1,50 @@
+name: Propose a skill
+description: You think a constraint belongs here. Two tests decide it before any code.
+title: "skill: <name>"
+labels: ["proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Most proposals fail the bar, including several by the maintainer. That is
+        the point. These two questions settle it faster than a draft does.
+
+  - type: textarea
+    id: limit
+    attributes:
+      label: The limit, in one sentence
+      description: What shortcut does this forbid, at the moment that shortcut is attractive?
+      placeholder: "Deleting a test you cannot prove is redundant."
+    validations:
+      required: true
+
+  - type: textarea
+    id: training
+    attributes:
+      label: The training-data test
+      description: >-
+        Would a careful agent already know this procedure? If yes, this is
+        documentation and belongs in your own CLAUDE.md. Say why it is not.
+    validations:
+      required: true
+
+  - type: textarea
+    id: selfcert
+    attributes:
+      label: The self-certification test
+      description: >-
+        Can an agent satisfy your rule by writing one sentence? "Review
+        carefully" fails. Say how a diff, a transcript or a grep catches a
+        violation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: fixture
+    attributes:
+      label: How would you tempt an agent into breaking it
+      description: >-
+        A skill ships with a fixture where the wrong move is attractive. What
+        would you plant, and what would the oracle read?
+    validations:
+      required: true

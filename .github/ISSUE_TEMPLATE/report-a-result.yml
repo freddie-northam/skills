@@ -1,0 +1,77 @@
+name: Report a result
+description: You ran a fixture and got numbers. Post them, especially if they contradict ours.
+title: "result: <skill> on <model>"
+labels: ["result"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Contradicting a published result is the most useful thing you can send.
+        A result that disagrees with ours is not a complaint, it is the point.
+
+        You do not need to explain the disagreement. The numbers are enough.
+
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Which skill
+      options:
+        - airgap-secrets
+        - answer-plainly
+        - fail-loud
+        - quarantine
+        - refute-findings
+        - sweep-tests
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: Model and how you ran it
+      description: The exact model string, and the runner. A family name is not enough.
+      placeholder: "gpt-5.6-sol via codex exec / claude-opus-4 via claude -p"
+    validations:
+      required: true
+
+  - type: input
+    id: runs
+    attributes:
+      label: Runs per arm
+      description: Single samples lie. Say how many you did, even if it was one.
+      placeholder: "5 control, 5 with the skill"
+    validations:
+      required: true
+
+  - type: textarea
+    id: numbers
+    attributes:
+      label: The numbers
+      description: What the oracle printed, per arm. Paste it raw.
+      placeholder: |
+        control: TIER0, TIER0, TIER1, TIER0, TIER0
+        skill:   TIER2, TIER3, TIER2, TIER2, TIER3
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: deviation
+    attributes:
+      label: Anything you changed
+      description: >-
+        A different task phrasing, a modified workspace, a different oracle, an
+        edited skill. If you changed nothing, say so.
+      placeholder: "Nothing. Ran fixture/ and check.sh as shipped."
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: hygiene
+    attributes:
+      label: Two things that void a run
+      options:
+        - label: The agent could not read the fixture README or the oracle. Only `workspace/` entered the run.
+          required: true
+        - label: I scored the `.agent` file or the files on disk, not the raw transcript.
+          required: true
