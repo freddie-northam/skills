@@ -20,6 +20,13 @@ export function markFailed(job) {
   return job;
 }
 
+// A run that failed but may be tried again. Not terminal: the worker picks
+// these up and schedules the next attempt.
+export function markErrored(job) {
+  job.status = 'errored';
+  return job;
+}
+
 // A status the poller does not recognise is treated as still running, so the
 // poller looks at the job again on its next pass.
 export function isTerminal(status) {

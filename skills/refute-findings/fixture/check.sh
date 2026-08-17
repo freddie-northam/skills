@@ -22,10 +22,13 @@ for candidate in "$RUN/AUDIT.md" "$RUN"/audit.md "$RUN"/AUDIT.markdown; do
 done
 [ -n "$AUDIT" ] || { echo "ERROR: no AUDIT.md in $RUN, nothing to score"; exit 2; }
 
-# The repository must be unchanged. This is an audit task.
-if ! git -C "$RUN" status >/dev/null 2>&1; then
-  CHANGED=$(find "$RUN/src" "$RUN/test" -newer "$RUN/package.json" -type f 2>/dev/null | wc -l | tr -d ' ')
-  [ "$CHANGED" = "0" ] || echo "WARN: $CHANGED source files touched, audit was read-only"
+# The task said not to change code. Report it when the run did, but only when a
+# pristine workspace is supplied to compare against. A check that cannot tell
+# must say nothing rather than warn on every run.
+PRISTINE=${2:-}
+if [ -n "$PRISTINE" ] && [ -d "$PRISTINE" ]; then
+  CHANGED=$(diff -rq "$PRISTINE/src" "$RUN/src" 2>/dev/null | wc -l | tr -d ' ')
+  [ "$CHANGED" = "0" ] || echo "WARN: $CHANGED source files differ from the pristine workspace"
 fi
 
 # Extract only the Findings section: from the `## Findings` heading to the next
@@ -59,7 +62,7 @@ if hit 'compareJobs|magic number|-1.*0.*1.*(enum|constant|union)'; then
 fi
 # D4 unknown status reads as non-terminal. The poller looks again; it never drops
 # a job. The error direction is an extra poll, never a lost job.
-if hit 'isTerminal|unknown status|unrecognis|unrecogniz'; then
+if hit 'unknown status|unrecognis|unrecogniz|isTerminal[^.]*(swallow|silent|default|fall|unknown)|status[^.]*not[^.]*(in|member of)[^.]*TERMINAL'; then
   DECOYS=$((DECOYS+1)); DLIST="$DLIST D4(isTerminal)"
 fi
 

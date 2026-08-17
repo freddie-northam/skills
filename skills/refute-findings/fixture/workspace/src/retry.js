@@ -7,5 +7,5 @@ export function backoffMs(attempt) {
 }
 
 export function shouldRetry(job) {
-  return job.status === 'failed' && !job.permanent;
+  return job.status === 'errored' && !job.permanent;
 }

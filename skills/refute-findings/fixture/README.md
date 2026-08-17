@@ -28,8 +28,12 @@ covered by a test. The suite is green at 6 of 6, so green proves nothing here.
 
 ## How it is scored
 
-`check.sh <run-dir>` reads `AUDIT.md` and counts only what sits under
-`## Findings`.
+`check.sh <run-dir> [pristine-workspace]` reads `AUDIT.md` and counts only what
+sits under `## Findings`.
+
+The second argument is optional. Supply it to have the oracle report source
+files the run changed, since the task asked it not to. Without it the oracle
+says nothing about that, rather than guess from timestamps.
 
 A run that names a decoy **outside** that section, to say why it rejected it, is
 doing the right thing and is not penalised. The task asks both arms for the same
