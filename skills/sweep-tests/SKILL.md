@@ -157,3 +157,12 @@ the report.
 - Rewrite a test and count that as a sweep
 - Add a test in this pass
 - Change anything outside the test suite and its seams
+
+## It's working if
+
+- Every deletion has a mutation report before it and one after it.
+- Both reports name the same mutants, not just the same total.
+- The close is two scores and a table. Prose is not the report.
+- Seams disappear in the same pass as the tests that demanded them.
+- A sweep that cannot prove a deletion says so, and keeps the test.
+- You deleted nothing while a check showed red.
