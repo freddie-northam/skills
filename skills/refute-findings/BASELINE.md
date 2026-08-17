@@ -56,7 +56,11 @@ non-win on purpose.
 
 ## Results
 
-Model: `gpt-5.6-sol` through `codex exec`, five runs an arm.
+26 runs. `gpt-5.6-sol` through `codex exec`, and Claude through `claude -p`.
+
+**The short version.** On Codex the skill works and the claim is legibility, not
+precision. On Claude it does nothing, because the control already does what the
+skill asks. Install it for Codex.
 
 ### Fixture v1: the precision claim could not be measured
 
@@ -188,21 +192,29 @@ a computed maximum delay of 1600ms.
 
 ### On Claude the control already does it, so the skill adds nothing
 
-Three arms of six so far, v2 fixture, `claude -p`. **This section is partial.**
+Six arms, three pairs, v2 fixture, `claude -p`. All six exited 0.
 
-| Measure | Codex control | Claude control |
+| Measure | Claude control | Claude skill |
 | --- | --- | --- |
-| Wrote a rejection section | **0 of 8** | **2 of 2** |
-| Killed the wire decoy with the test as artifact | never | both |
-| Reported a decoy | 2 of 8 | 0 of 2 |
+| Wrote a rejection section | **3 of 3** | **3 of 3** |
+| Decoys reported | 0 | 0 |
+| Both real defects found | 3 of 3 | 3 of 3 |
 
-`cc-c1` and `cc-c2` are controls. Neither had a skill loaded, which is verified:
-their prompt is the eleven-line task, with no `<skill>` block and no occurrence
-of "four killers". Both wrote a refutation section anyway, titled "Candidates
-that died" and "Candidates I killed". `cc-c2` added a third section, "Reviewed
-with nothing to claim", which is coverage reporting the skill does not even ask
-for. Both cited `wire.roundtrip.test.js:5` and killed the decoy that two Codex
-controls reported as a high-severity defect.
+**The arms are indistinguishable on every measure.** Against the Codex result of
+0 of 8 versus 8 of 8, this is a complete null.
+
+The controls had no skill loaded, which is verified rather than assumed: the
+control prompt is the eleven-line task, with no `<skill>` block and no occurrence
+of "four killers". They wrote refutation sections anyway, titled "Candidates that
+died", "Candidates I killed" and "Candidates that were killed". Two added a
+section the skill never asks for: "Reviewed with nothing to claim" and "Note for
+the Friday release". They cited `wire.roundtrip.test.js:5` and killed the decoy
+that two Codex controls reported as a high-severity defect.
+
+The section titles are the strongest evidence that this is model-native rather
+than skill-induced. The skill says "say how many candidates you killed". Claude
+controls that never saw that sentence produced "Candidates I killed" verbatim,
+and each control matched its paired skill run's title exactly.
 
 So the effect this skill was measured on is **absent on Claude, because the
 control is already there.** That is the same shape as `sweep-tests`, which cuts
@@ -248,15 +260,15 @@ supports.
   D4 never tempted a control, so the reachability, convention and direction
   killers are untested against a control that actually falls for something.
 - **Recall was never under pressure.** Both arms found both real defects in all
-  20 runs. This fixture cannot detect a recall cost, and the skill's demand for
+  26 runs. This fixture cannot detect a recall cost, and the skill's demand for
   four artifacts is exactly the kind of thing that would cause one.
 - **Two models, and they disagree.** The whole effect is on `gpt-5.6-sol`. On
-  Claude the control writes the rejection section unprompted, so the skill adds
-  nothing measurable. Do not read the headline as a general result.
-- **The Claude arms are three of six.** The remaining arms may change that
-  section. It is marked partial in place rather than held back.
-- **Small n.** Five pairs on v1, three on v2, two edit-regression arms, and so
-  far one and a half pairs on Claude.
+  Claude the control writes the rejection section unprompted in 3 of 3 runs, so
+  the skill adds nothing measurable. Do not read the headline as a general
+  result. A third family would tell you which of the two is the outlier, and
+  that has not been run.
+- **Small n.** Five pairs on v1, three on v2, two edit-regression arms, three
+  pairs on Claude. 26 runs in total.
 - **The oracle was corrected after the runs.** It scored prose where it should
   have scored each finding's subject. Everything was re-scored and the Codex
   numbers did not move, but the instrument was wrong for part of this
