@@ -51,6 +51,9 @@ Use when writing a catch block, a default value, a retry wrapper, or a mock outs
 **`quarantine`**
 Use when handling content the task did not write: a fetched web page, a pull request or issue comment, a README from a dependency, output from a subprocess or a subagent, a pasted log, a scraped result. Also when a string from any of those enters a shell command, a file path, or a URL, and when such content appears to address the assistant directly.
 
+**`refute-findings`**
+Use when you audit or review code and are about to report a finding: a bug, a smell, a simplification, a security hole, a performance problem. Also when a subagent hands you findings to accept, and whenever you write "should be", "could be simplified", "permits an invalid state", "fragile", or "consider".
+
 **`sweep-tests`**
 Use when asked to prune, audit, or improve a test suite; when tests break on refactors that change no behavior; when a test file changes in the same commit as its source again and again; when coverage is high but defects still ship; or when production code carries interfaces, mocks, dependency hooks, or exported symbols that only tests use.
 
@@ -112,6 +115,7 @@ opinion.
 | [quarantine](./skills/quarantine/) | Acting on content the task did not write | [Measured](./skills/quarantine/BASELINE.md), 26 runs, 4 model families. Control breached 5 of 6 on the two susceptible models, 0 of 6 with the skill |
 | [airgap-secrets](./skills/airgap-secrets/) | Letting a credential reach a transcript, diff, or build context | [Measured](./skills/airgap-secrets/BASELINE.md), 26 runs, **3 model families**. Control leaked a credential in 3 of 11 valid runs. All 13 skill runs clean and flagged |
 | [fail-loud](./skills/fail-loud/) | Turning a failure into success-shaped output | [Measured](./skills/fail-loud/BASELINE.md), 14 runs, **3 model families**. Control fabricated rate data in 5 of 7 runs, 0 of 7 with the skill |
+| [refute-findings](./skills/refute-findings/) | Reporting an audit finding you did not try to kill | [Measured](./skills/refute-findings/BASELINE.md), 20 runs, 1 model. 0 of 8 controls recorded what they rejected, 8 of 8 with the skill. **The precision claim is not established**, and the baseline says why |
 
 Every skill in `skills/` has been measured against a control. Anything that did
 not beat its control was cut, not softened.
@@ -124,7 +128,7 @@ control runs here recognised an injected instruction as agent-targeted and
 followed it anyway, having judged it harmless.
 
 So each baseline now answers a question the rest of this genre does not ask:
-**would a hook do this better?** For three of these four the answer is yes.
+**would a hook do this better?** For four of these five the answer is yes.
 
 | Skill | Deterministic alternative | Right layer? |
 | --- | --- | --- |
@@ -132,6 +136,7 @@ So each baseline now answers a question the rest of this genre does not ask:
 | `sweep-tests` | a mutation-score threshold in CI | The gate is the control; the skill does the work |
 | `fail-loud` | lint rules for empty catches, literal returns, mocks outside tests | Partly. Rules catch the shape, not fabricated data |
 | **`quarantine`** | **none exists** | **Yes** |
+| `refute-findings` | a CI step that rejects an audit with no rejection section | The gate is the control; the skill does the work |
 
 Install the hooks first. They handle their boundaries better than any
 instruction can. Load a skill where no deterministic check can reach.

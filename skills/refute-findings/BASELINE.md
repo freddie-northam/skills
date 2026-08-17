@@ -56,8 +56,188 @@ non-win on purpose.
 
 ## Results
 
-_Pending. This file was committed before the runs._
+Model: `gpt-5.6-sol` through `codex exec`, five runs an arm.
+
+### Fixture v1: the precision claim could not be measured
+
+| Arm | 1 | 2 | 3 | 4 | 5 | Decoys an arm |
+| --- | --- | --- | --- | --- | --- | --- |
+| Control | T3 | T3 | T3 | T3 | T1 | **0.2** |
+| Skill | T3 | T3 | T3 | T3 | T3 | **0.0** |
+
+The bar required the control to average at least 1.5 decoys. It averaged 0.2.
+
+**The fixture is at fault, and the bar said so before the run.** Every decoy in
+v1 carried a comment stating its own defence: `wire.js` explained the round-trip
+requirement in eight lines, `compareJobs` was labelled a sort comparator, and
+`isTerminal` explained the poller. Rejecting those costs a glance, not a check.
+No skill is needed to read the line above the code. This repeats the
+`fix-the-code-not-the-gate` result in METHOD.md, where the fixture stated its own
+answer and ten of ten runs got it right in both arms.
+
+Both arms found both real defects in every run. The skill cost no recall.
+
+### What v1 did measure: the audit's negative space
+
+| | Rejection section | Killed candidates listed | Mean lines |
+| --- | --- | --- | --- |
+| Control | **0 of 5** | 0 | 33.0 |
+| Skill | **5 of 5** | up to 9 | 46.4 |
+
+No control wrote a rejection section in any run. Every skill run did. The skill
+runs also killed candidates nobody planted, and killed them with artifacts:
+caller counts, `test/wire.roundtrip.test.js:8-16`, `src/worker.js:13`, a computed
+maximum delay of 1600ms.
+
+This is a real effect and a smaller claim than precision. A reader of a control
+audit cannot tell "I considered these and rejected them" from "I never looked".
+A reader of a skill audit can.
+
+### The defect this found in the skill itself
+
+One candidate separated the arms in the direction that matters.
+
+| Run | Verdict on `attemptsFor` returning 0 for an absent ID |
+| --- | --- |
+| `ctl-5`, no skill | Reported it, high severity |
+| `tre-3`, skill v1 | **Killed it**, citing "`planNext` has zero in-repository callers" |
+
+The control was right. The defect is reachable through the other planted defect:
+once `remove` drops the id, `attemptsFor` returns 0 for a job still in flight and
+`recordAttempt` no-ops, so the job retries at 100ms forever and never reaches
+`MAX_ATTEMPTS`.
+
+So the first version of this skill was **worse than no skill** on that finding.
+Its reachability killer suppressed a real defect that the control caught, because
+the agent read "no caller in this repository" as proof of unreachability. For an
+exported symbol that is backwards: no internal caller means it is a public
+interface, and its inputs are hostile rather than absent.
+
+The skill now says so, in the reachability killer itself. That edit is measured
+separately below, on the same fixture, so the edit cannot hide behind a fixture
+change.
+
+### The edit, measured on its own
+
+Two arms on the **v1** fixture with the edited skill, so the edit cannot hide
+behind a fixture change.
+
+| Skill version | Runs | Used "no callers in this repository" as a kill | Tier |
+| --- | --- | --- | --- |
+| v1, unedited | 5 | **2 runs** (`tre-2` once, `tre-3` three times) | T3 ×4, T3 |
+| v2, edited | 2 | **0 runs** | T3, T3 |
+
+No recall cost: both edited arms found both real defects.
+
+The mechanism is worth naming. Closing the "no callers" escape hatch removed the
+cheap answer to the reachability killer. `edit-1` then answered it the expensive
+way, by running the code:
+
+> A direct run that gave job `a` five attempts, queued a fresh job `b`, and
+> removed `a` left array lengths of `1/1/2`. `attemptsFor('b')` returned `5`...
+> The error therefore runs in both harmful directions.
+
+That is a better account of R1 than the fixture author wrote. Two arms is not
+proof. It rules out an obvious regression and is consistent with the edit working.
+
+### Fixture v2: signposts removed, facts unchanged
+
+v2 deletes the comments that stated each decoy's own defence, moves the retry cap
+behind a config indirection, and renames `compareJobs` to `rank`. Every killer
+still works. None costs a glance any more.
+
+| Arm | 1 | 2 | 3 | Decoys an arm |
+| --- | --- | --- | --- | --- |
+| Control | T1 | T1 | T3 | **0.67** |
+| Skill | T3 | T3 | T3 | **0.00** |
+
+**This does not clear the bar.** The bar required the control to average 1.5
+decoys. It averaged 0.67, which is two decoy events across three runs. The
+direction is consistent and the sample is too small to carry the precision claim,
+so the claim is not made.
+
+Both control failures were the same decoy, D1. My v2 changes to D2, D3 and D4 did
+not make them tempting, so three of the four killers were never put under load.
+
+What the two events do show, concretely, is the killer working as designed:
+
+| | D1, the envelope flags |
+| --- | --- |
+| `v2c-1`, no skill | Reported it. "High: Independent envelope flags permit contradictory lifecycle states" |
+| `v2t-1`, skill | Killed it. "killed by stated intent. `test/wire.roundtrip.test.js:5-15` exhaustively constructs all eight flag combinations and requires byte-identical round trips." |
+
+The comment stating that requirement was removed in v2. The only remaining
+evidence is the test. The skill run read the test. The control did not, and
+reported a non-defect as high severity in a release week.
+
+### What is actually measured
+
+Across all 20 runs, on both fixtures:
+
+| Measure | Control | Skill |
+| --- | --- | --- |
+| **Wrote a rejection section** | **0 of 8** | **8 of 8** |
+| Cited file and line | 0 in the two v2 arms checked | 10 and 2 |
+| Found both real defects | every run | every run |
+| Mean report length, v1 | 33.0 lines | 46.4 lines |
+
+**The measured claim is legibility, not precision.** No control in twenty runs
+wrote down what it considered and rejected. Every skill run did, with artifacts:
+caller counts, `test/wire.roundtrip.test.js:8-16`, `src/worker.js:13`, a computed
+maximum delay of 1600ms.
+
+The skill runs also killed candidates nobody planted, and killed them correctly:
+unstable drain order, killed by convention, "ECMAScript specifies stable
+`Array.prototype.sort`"; a first-retry off-by-one, killed by convention, because
+the count is zero-based. Those are the plausible-but-wrong findings that pad a
+release-week audit.
+
+So a reader of a control audit cannot tell "I considered these and rejected them"
+from "I never looked". A reader of a skill audit can. That is a smaller claim
+than the one this skill was written to make, and it is the one the evidence
+supports.
 
 ## Honest limits
 
-_Pending._
+- **The precision claim is not established.** 0.67 decoys an arm in the control,
+  against a pre-registered bar of 1.5. Two events. The fixture never reached the
+  temptation threshold I committed to before running, on either version.
+- **The separation rests on one decoy.** D1 in both control failures. D2, D3 and
+  D4 never tempted a control, so the reachability, convention and direction
+  killers are untested against a control that actually falls for something.
+- **Recall was never under pressure.** Both arms found both real defects in all
+  20 runs. This fixture cannot detect a recall cost, and the skill's demand for
+  four artifacts is exactly the kind of thing that would cause one.
+- **One model.** `gpt-5.6-sol` through `codex exec`. Nothing here says how this
+  behaves on Claude or any other family. Two skills in this repository work on
+  one family and add nothing on another.
+- **Small n.** Five pairs on v1, three on v2, two edit-regression arms.
+- **The oracle greps a report, not a disk.** Unavoidable: an audit's output *is*
+  a report. `answer-plainly` has the same property and ships no `check.sh` at
+  all. It is only sound here because the harness now strips the prompt from the
+  transcript. Before that fix, every pattern in a `SKILL.md` scored its own
+  treatment arm.
+- **The Findings-section split is imperfect.** A run that names a decoy inside
+  `## Findings` in order to reject it scores as reporting it. That biases against
+  the skill, which is the safe direction, but it is not exact.
+- **I introduced unscored noise.** `config.js` duplicates `MAX_DEPTH` from
+  `queue.js`. Both arms legitimately flag it. It is neither a decoy nor a planted
+  defect and it is not counted, but it is clutter I added.
+- **The fixture was rebuilt twice.** Once for a structural bug that made the
+  retry path unreachable and broke two decoys, found by a control run. Once for
+  temptation. The bar was committed before the first arm and never moved. The
+  run made against the broken fixture is discarded, not reported.
+- **The skill was edited mid-experiment**, on evidence from the runs. The edit is
+  measured separately on the unchanged fixture, but two arms is thin.
+- **A hook would not do this.** No linter can tell a well-evidenced finding from
+  a plausible one. But neither can this skill, reliably: it is an instruction,
+  and `tre-3` reasoned around it three times in one run before the edit.
+
+## Would a hook do this better?
+
+No, and no deterministic check exists. A finding's soundness is not a property of
+the diff. But the honest position is that this skill's effect is on the *shape*
+of the report rather than on its correctness, and the shape is checkable: a CI
+step could reject an audit that has no rejection section. That gate would be the
+control, and the skill would do the work, which is the same split
+`sweep-tests` has.

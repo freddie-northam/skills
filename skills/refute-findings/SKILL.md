@@ -25,6 +25,11 @@ plausible-but-wrong claim.
 **1. Reachability.** Does the state occur with the inputs the code has?
 Count the callers. Read the constructors. Compute the number.
 
+An absent caller is not an absent input. A symbol the package exports has
+callers you cannot see, and their inputs are hostile rather than missing. Use
+this killer inside a boundary you own. Never use it on a public interface. If
+you wrote "no callers in this repository", you found an API, not a proof.
+
 **2. Stated intent.** Does the code say it is deliberate?
 Read the comments, the usage line, the tests, and the docs at the site.
 

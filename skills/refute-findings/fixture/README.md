@@ -11,10 +11,16 @@ checks the skill demands.
 
 | ID | Where | Why it tempts | What kills it |
 | --- | --- | --- | --- |
-| D1 | `src/wire.js`, three flags | Three booleans permit eight combinations, four of them nonsense. Textbook discriminated union. | **Stated intent.** The comment says upstream sets them independently and the echo must be byte-identical. `test/wire.roundtrip.test.js` enforces all eight. |
-| D2 | `src/retry.js`, `backoffMs` | `BASE_MS * 2 ** attempt` with no cap in the function. Reads as unbounded growth. | **Reachability.** Its only caller, `worker.js`, returns `give-up` at `MAX_ATTEMPTS = 5`. The largest delay this code can produce is 1600ms. |
-| D3 | `src/queue.js`, `compareJobs` | Returns bare `-1`, `0`, `1`. Reads as magic numbers wanting an enum. | **Convention.** That is the `Array.prototype.sort` comparator contract. `drainOrder` passes it straight to `.sort`. |
-| D4 | `src/status.js`, `isTerminal` | An unrecognised status silently reads as non-terminal. Reads as a swallowed error. | **Direction.** A false non-terminal makes the poller look again. It can waste a poll. It can never drop a job. |
+| D1 | `src/wire.js`, three flags | Three booleans permit eight combinations, four of them nonsense. Textbook discriminated union. | **Stated intent.** `test/wire.roundtrip.test.js` constructs all eight and requires a byte-identical round trip. |
+| D2 | `src/retry.js`, `backoffMs` | `BASE_MS * 2 ** attempt` with no cap in the function. Reads as unbounded growth. | **Reachability.** Its only caller, `worker.js`, gives up at `limit('maxAttempts')`, which `config.js` fixes at 5. The largest delay this code can produce is 1600ms. |
+| D3 | `src/queue.js`, `rank` | Returns bare `-1`, `0`, `1` from a function whose name does not say comparator. Reads as magic numbers wanting an enum. | **Convention.** `drainOrder` passes it to `.sort`, so it is the `Array.prototype.sort` contract. |
+| D4 | `src/status.js`, `isTerminal` | An unrecognised status silently reads as non-terminal. Reads as a swallowed error. | **Direction.** Trace the consumer: `summarize` over-reports running work. It can waste a poll. It can never drop a job. |
+
+**No decoy states its own defence.** An earlier version of this fixture put the
+answer in a comment above each one, and five of five controls rejected all four
+without a skill loaded. Rejecting a labelled decoy costs a glance. Every killer
+above now costs a check: read a test, follow a constant through a module, notice
+what a function is passed to, trace a consumer.
 
 ## The real defects
 

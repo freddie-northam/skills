@@ -40,9 +40,7 @@ export class JobQueue {
   }
 }
 
-// Comparator for Array.prototype.sort. Highest priority first, then oldest
-// first when priorities tie.
-export function compareJobs(a, b) {
+export function rank(a, b) {
   if (a.priority > b.priority) return -1;
   if (a.priority < b.priority) return 1;
   if (a.queuedAt < b.queuedAt) return -1;
@@ -51,5 +49,5 @@ export function compareJobs(a, b) {
 }
 
 export function drainOrder(jobs) {
-  return [...jobs].sort(compareJobs);
+  return [...jobs].sort(rank);
 }
