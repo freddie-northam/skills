@@ -74,9 +74,35 @@ condition lost detection.** The cut costs nothing.
 > - **No run needs discarding**, because the tool under-reported rather than
 >   over-reported, and the direction is conservative for the skill's claim.
 >
-> Re-running the arms at 16/18 would settle it. Until then the column is
-> evidence about a smaller mutant set than the tool now generates, and the
-> single-number score is exactly the thing `SKILL.md` warns is not proof.
+> **Re-run at 18 mutants. The concern does not materialise.**
+>
+> Four arms on `gpt-5.6-sol` through `codex exec`, current skill, scoring the
+> repaired tool. Mutant identities recorded before and after each sweep and
+> compared without line numbers, because seam removal shifts every line.
+>
+> | Arm | Tests | Mutants | Killed | Lost or status-changed | New |
+> | --- | --- | --- | --- | --- | --- |
+> | baseline | 26 | 18 | 16 | | |
+> | sw-1 | **7** | 18 | 16 | **0** | 0 |
+> | sw-2 | **7** | 18 | 16 | **0** | 0 |
+> | sw-3 | **7** | 18 | 16 | **0** | 0 |
+> | sw-4 | **9** | 18 | 16 | **0** | 0 |
+>
+> Every sweep preserved all 18 mutants, the same 16 kills and the same two
+> survivors, `< -> <=` and `25 -> 26`. Nothing disappeared and nothing changed
+> status. The five `formatMoney` mutants the old tool could not generate are
+> killed in every arm.
+>
+> This matters because `format.snapshot.test.js` is the only test reaching
+> `formatMoney`, and `SKILL.md` names snapshot tests as deletion candidates. No
+> arm took the bait.
+>
+> **What this is not.** These are new arms on a fourth model. `gpt-5.6-sol` is
+> not in the table above, so this does not retroactively re-measure the Opus,
+> Fable or Sonnet rows. It shows that a sweep of this fixture under this skill
+> holds at 18 mutants, which is direct evidence against the failure the narrower
+> tool could have hidden. Re-running the three published models would close it
+> completely.
 
 ## The finding that matters most
 
