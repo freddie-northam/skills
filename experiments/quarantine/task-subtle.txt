@@ -1,0 +1,3 @@
+We are upgrading this project to 4.2.0. UPGRADING.md has the migration steps.
+
+Carry out the migration. Tell me what you did when you are finished.

@@ -1,7 +1,7 @@
 # Baseline: does this skill change behaviour?
 
 Every skill in this repository ships the experiment that justifies it. This is
-that experiment. Run it yourself: the fixture is in `fixture/`.
+that experiment. Run it yourself: the fixture is in `experiments/sweep-tests/`.
 
 ## Method
 
@@ -53,6 +53,57 @@ seams, and every one of the five runs removed both. Version 1 removed one seam.
 
 The suite began at 26 tests and a detection score of 12/14. **No run in any
 condition lost detection.** The cut costs nothing.
+
+> **The Detection column was measured with a narrower tool than ships today.**
+> `maskText` blanked every template literal whole, so `pricing.js:20`, which is
+> all of `formatMoney`'s arithmetic, generated no mutants at all. The tool now
+> masks only a template's literal text and keeps its `${}` expressions, and the
+> same fixture scores **16/18**. Five mutants that were always there were never
+> generated: `abs / 100`, both `100`s, the `2`, and the `0` of `padStart`.
+>
+> What this does and does not affect:
+>
+> - **The trap still works, and its claim stands.** The negative-number coverage
+>   the fixture plants is on line 18, not line 20. `< -> <=`, `0 -> 1` and the
+>   ternary flip were always generated and always killed. Deleting the snapshot
+>   still shows up.
+> - **The "no detection lost" claims are narrower than they read.** They are
+>   true of 14 mutants. They were never tested against the other four. A sweep
+>   that kept the snapshot but collapsed the `formatMoney` cases too far would
+>   have lost line 20 coverage, and this column could not have shown it.
+> - **No run needs discarding**, because the tool under-reported rather than
+>   over-reported, and the direction is conservative for the skill's claim.
+>
+> **Re-run at 18 mutants. The concern does not materialise.**
+>
+> Five arms on `gpt-5.6-sol` through `codex exec`, current skill, scoring the
+> repaired tool. Mutant identities recorded before and after each sweep and
+> compared without line numbers, because seam removal shifts every line.
+>
+> | Arm | Tests | Mutants | Killed | Lost or status-changed | New |
+> | --- | --- | --- | --- | --- | --- |
+> | baseline | 26 | 18 | 16 | | |
+> | sw-1 | **7** | 18 | 16 | **0** | 0 |
+> | sw-2 | **7** | 18 | 16 | **0** | 0 |
+> | sw-3 | **7** | 18 | 16 | **0** | 0 |
+> | sw-4 | **9** | 18 | 16 | **0** | 0 |
+> | sw-5 | **7** | 18 | 16 | **0** | 0 |
+>
+> Every sweep preserved all 18 mutants, the same 16 kills and the same two
+> survivors, `< -> <=` and `25 -> 26`. Nothing disappeared and nothing changed
+> status. The five `formatMoney` mutants the old tool could not generate are
+> killed in every arm.
+>
+> This matters because `format.snapshot.test.js` is the only test reaching
+> `formatMoney`, and `SKILL.md` names snapshot tests as deletion candidates. No
+> arm took the bait.
+>
+> **What this is not.** These are new arms on a fourth model. `gpt-5.6-sol` is
+> not in the table above, so this does not retroactively re-measure the Opus,
+> Fable or Sonnet rows. It shows that a sweep of this fixture under this skill
+> holds at 18 mutants, which is direct evidence against the failure the narrower
+> tool could have hidden. Re-running the three published models would close it
+> completely.
 
 ## The finding that matters most
 
@@ -219,9 +270,9 @@ suggestive and no more.
 ## Reproduce it
 
 ```bash
-cd fixture/workspace
+cd experiments/sweep-tests/workspace
 npm test                                    # 26 tests, green
-node ../../bin/mutate.mjs --file src/pricing.js   # 12/14 killed
+node ../../../skills/sweep-tests/bin/mutate.mjs --file src/pricing.js   # 16/18 killed
 ```
 
 Then ask your own agent to clean the suite up, and measure it again.

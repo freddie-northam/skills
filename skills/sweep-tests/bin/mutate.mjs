@@ -26,14 +26,72 @@ const OPERATORS = [
   { id: 'ternary-flip', find: /\? '([^']*)' : '([^']*)'/g, put: "? '$2' : '$1'", onText: true },
 ];
 
-// Blanks out the inside of strings, template literals, and comments, keeping
+// Blanks out the inside of strings, regular expressions, and comments, keeping
 // every index aligned with the source. Operators run against this, so a date
 // such as '2026-12-31' never reports as uncovered behaviour.
+const MASKABLE = new RegExp(
+  [
+    "'[^'\\n]*'",
+    '"[^"\\n]*"',
+    '`(?:[^`\\\\]|\\\\[\\s\\S])*`',
+    '//[^\\n]*',
+    '/\\*[\\s\\S]*?\\*/',
+    // A regular expression literal. The caller checks the character before it,
+    // because the same slash divides.
+    '/(?![*/])(?:[^/\\n\\\\[]|\\\\.|\\[(?:[^\\]\\\\]|\\\\.)*\\])+/[gimsuy]*',
+  ].join('|'),
+  'g',
+);
+
+// Characters that cannot end an expression. A slash after one of these opens a
+// regular expression. A slash after anything else is division, and division is
+// mutable, so it must not be masked.
+const BEFORE_REGEX = '(,=:[!&|?{};+-*%~^<>\n';
+
+function blanked(text) {
+  return text[0] + ' '.repeat(text.length - 2) + text[text.length - 1];
+}
+
+// A template literal is masked in parts. Its literal text is blanked and every
+// ${} expression is kept, because that expression is code and a mutation inside
+// it is a real mutation. Blanking the whole template removed every operator in
+// `${sign}$${Math.floor(abs / 100)}...` from the run, and the score never said
+// so. Two published numbers were computed with that line excluded.
+function maskTemplate(match) {
+  let out = '';
+  let i = 0;
+  while (i < match.length) {
+    const open = match.indexOf('${', i);
+    if (open === -1) {
+      out += ' '.repeat(match.length - i);
+      break;
+    }
+    out += ' '.repeat(open - i);
+    let depth = 0;
+    let j = open + 1;
+    for (; j < match.length; j += 1) {
+      if (match[j] === '{') depth += 1;
+      else if (match[j] === '}') {
+        depth -= 1;
+        if (depth === 0) break;
+      }
+    }
+    out += match.slice(open, j + 1);
+    i = j + 1;
+  }
+  return '`' + out.slice(1, out.length - 1) + '`';
+}
+
 function maskText(source) {
-  return source.replace(
-    /'[^'\n]*'|"[^"\n]*"|`[^`]*`|\/\/[^\n]*|\/\*[\s\S]*?\*\//g,
-    (match) => match[0] + ' '.repeat(match.length - 2) + match[match.length - 1],
-  );
+  return source.replace(MASKABLE, (match, offset) => {
+    if (match[0] === '`') return maskTemplate(match);
+    if (match[0] === '/' && match[1] !== '/' && match[1] !== '*') {
+      const before = source.slice(0, offset).replace(/[ \t]+$/, '');
+      const prev = before[before.length - 1];
+      if (prev !== undefined && !BEFORE_REGEX.includes(prev)) return match;
+    }
+    return blanked(match);
+  });
 }
 
 function parseArgs(argv) {

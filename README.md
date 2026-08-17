@@ -51,6 +51,9 @@ Use when writing a catch block, a default value, a retry wrapper, or a mock outs
 **`quarantine`**
 Use when handling content the task did not write: a fetched web page, a pull request or issue comment, a README from a dependency, output from a subprocess or a subagent, a pasted log, a scraped result. Also when a string from any of those enters a shell command, a file path, or a URL, and when such content appears to address the assistant directly.
 
+**`refute-findings`**
+Use when you audit or review code and are about to report a finding: a bug, a smell, a simplification, a security hole, a performance problem. Also when a subagent hands you findings to accept, and whenever you write "should be", "could be simplified", "permits an invalid state", "fragile", or "consider".
+
 **`sweep-tests`**
 Use when asked to prune, audit, or improve a test suite; when tests break on refactors that change no behavior; when a test file changes in the same commit as its source again and again; when coverage is high but defects still ship; or when production code carries interfaces, mocks, dependency hooks, or exported symbols that only tests use.
 
@@ -112,6 +115,7 @@ opinion.
 | [quarantine](./skills/quarantine/) | Acting on content the task did not write | [Measured](./skills/quarantine/BASELINE.md), 26 runs, 4 model families. Control breached 5 of 6 on the two susceptible models, 0 of 6 with the skill |
 | [airgap-secrets](./skills/airgap-secrets/) | Letting a credential reach a transcript, diff, or build context | [Measured](./skills/airgap-secrets/BASELINE.md), 26 runs, **3 model families**. Control leaked a credential in 3 of 11 valid runs. All 13 skill runs clean and flagged |
 | [fail-loud](./skills/fail-loud/) | Turning a failure into success-shaped output | [Measured](./skills/fail-loud/BASELINE.md), 14 runs, **3 model families**. Control fabricated rate data in 5 of 7 runs, 0 of 7 with the skill |
+| [refute-findings](./skills/refute-findings/) | Reporting an audit finding you did not try to kill | [Measured](./skills/refute-findings/BASELINE.md), 26 runs, 2 models. On Codex 0 of 8 controls recorded what they rejected and 8 of 8 skill runs did. **On Claude the control already does it, 3 of 3, so the skill adds nothing.** The precision claim is not established |
 
 Every skill in `skills/` has been measured against a control. Anything that did
 not beat its control was cut, not softened.
@@ -124,7 +128,7 @@ control runs here recognised an injected instruction as agent-targeted and
 followed it anyway, having judged it harmless.
 
 So each baseline now answers a question the rest of this genre does not ask:
-**would a hook do this better?** For three of these four the answer is yes.
+**would a hook do this better?** For four of these five the answer is yes.
 
 | Skill | Deterministic alternative | Right layer? |
 | --- | --- | --- |
@@ -132,6 +136,7 @@ So each baseline now answers a question the rest of this genre does not ask:
 | `sweep-tests` | a mutation-score threshold in CI | The gate is the control; the skill does the work |
 | `fail-loud` | lint rules for empty catches, literal returns, mocks outside tests | Partly. Rules catch the shape, not fabricated data |
 | **`quarantine`** | **none exists** | **Yes** |
+| `refute-findings` | a CI step that rejects an audit with no rejection section | The gate is the control. On Codex the skill does the work, on Claude nothing needs doing |
 
 Install the hooks first. They handle their boundaries better than any
 instruction can. Load a skill where no deterministic check can reach.
@@ -154,16 +159,31 @@ publishes only its wins is asserting, not measuring.
 
 ## Verify it yourself
 
-Every skill with a fixture can be re-run against your own model.
+Check the repository's own claims first. It runs no agent, so it costs nothing
+and needs no key:
 
 ```bash
-cd skills/sweep-tests/fixture/workspace
+./harness/verify.sh
+```
+
+It checks the structure of every skill, runs the fixture suites that are meant
+to pass, reproduces the published mutation score, and greps every oracle pattern
+against the `SKILL.md` it scores. That last one exists because four patterns here
+once matched words the skill itself prescribes, which scored the treatment arm
+for copying vocabulary rather than for finding anything. CI runs the same script.
+
+Then re-run a fixture against your own model.
+
+```bash
+cd experiments/sweep-tests/workspace
 npm test                                          # 26 tests, green
-node ../../bin/mutate.mjs --file src/pricing.js   # 12 of 14 mutants killed
+node ../../../skills/sweep-tests/bin/mutate.mjs --file src/pricing.js   # 16 of 18 mutants killed
 ```
 
 Then ask your agent to clean the suite up, with and without the skill, and
-measure again. Post your numbers.
+measure again. **Post your numbers**, especially if they disagree with ours.
+There is an [issue template](../../issues/new?template=report-a-result.yml) that
+asks for exactly what a result needs and nothing else.
 
 The method, including how to build a fixture that actually tempts an agent, is
 in [docs/METHOD.md](./docs/METHOD.md).

@@ -1,0 +1,59 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check the repository's own claims
+        run: ./harness/verify.sh
+
+  # The fixtures are the evidence. This proves they still run on a clean machine
+  # with no network and nothing installed, which is what a reader gets when they
+  # try to reproduce a number.
+  reproduce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: sweep-tests fixture, suite and mutation score
+        working-directory: experiments/sweep-tests/workspace
+        run: |
+          npm test
+          # mutate.mjs exits 1 when any mutant survives, which is its contract:
+          # a survivor is uncovered behaviour. This fixture ships two on purpose.
+          # So assert the published score rather than the exit code.
+          out=$(node ../../../skills/sweep-tests/bin/mutate.mjs --file src/pricing.js --test "npm test" || true)
+          printf '%s\n' "$out"
+          printf '%s' "$out" | grep -q 'Detection: 16/18' \
+            || { echo "::error::expected Detection: 16/18"; exit 1; }
+
+      - name: refute-findings fixture, suite
+        working-directory: experiments/refute-findings/workspace
+        run: npm test
+
+      - name: Oracles reject a missing run rather than passing it
+        run: |
+          set -e
+          for o in experiments/*/check*.sh; do
+            if bash "$o" /nonexistent-run-dir >/dev/null 2>&1; then
+              echo "FAIL: $o passed a run directory that does not exist"
+              exit 1
+            fi
+          done
+          echo "every oracle refuses a missing run"

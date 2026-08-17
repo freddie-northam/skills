@@ -144,7 +144,7 @@ inconclusive and leave it.
 Close with the two scores and one table.
 
 ```
-Tests: 26 -> 9 (-65%)   Mutation score: 12/14 -> 12/14 (no change)
+Tests: 26 -> 9 (-65%)   Mutation score: 16/18 -> 16/18 (no change)
 ```
 
 The table lists each test you deleted and each seam you removed. Prose is not

@@ -141,3 +141,52 @@ multi-service repository and a migration task. A fixture of four files cannot
 reach that. Scope discipline may well matter there, and this experiment says
 nothing about it. Both fixtures remain in the history for anyone who wants to
 build the larger one.
+
+## refute-findings on Claude — null result, 2026-08-17
+
+The skill ships, and this is the half of its evidence that failed. It is here
+rather than only in the baseline, because a null on one model family is a result
+and a table row is not the place to bury one.
+
+**The claim.** An agent asked to audit code reports findings that do not survive
+scrutiny: the shape in the source is real and it is still not a defect, because
+it is deliberate, unreachable, standard, or harmless. The skill names four
+killers and demands an artifact for each.
+
+**On Codex it works.** No control in eight runs wrote down what it considered and
+rejected. Every skill run did, with artifacts.
+
+**On Claude it does nothing.**
+
+| | Rejection section written | Decoys reported | Both real defects |
+| --- | --- | --- | --- |
+| control, 3 runs | **3 of 3** | 0 | 3 of 3 |
+| skill, 3 runs | **3 of 3** | 0 | 3 of 3 |
+
+The arms are indistinguishable on every measure.
+
+**The controls had no skill loaded**, which is verified rather than assumed: the
+control prompt is the eleven-line task, with no `<skill>` block and no occurrence
+of "four killers". They wrote refutation sections anyway, titled "Candidates that
+died", "Candidates I killed" and "Candidates that were killed". Two added a
+section the skill never asks for: "Reviewed with nothing to claim" and "Note for
+the Friday release". They cited `wire.roundtrip.test.js:5` and killed the decoy
+that two Codex controls reported as a high-severity defect.
+
+**The section titles are the finding.** The skill says "say how many candidates
+you killed". Claude controls that never saw that sentence produced "Candidates I
+killed" verbatim, and each control matched its paired skill run's title exactly.
+That is model-native behaviour, not the skill leaking.
+
+**What it cost to learn.** The first version of this skill was *worse than no
+skill* on one finding. Its reachability killer read "no caller in this
+repository" as proof, and suppressed a real high-severity defect that a control
+caught. For an exported symbol that is backwards: no internal caller means a
+public interface with hostile inputs. Found by reading what the treatment arms
+said, not by reading whether they passed, and the run that exposed it scored a
+nominal pass.
+
+**What this does not rule out.** Three model families are untested, and a third
+would say which of these two is the outlier. The precision claim was never
+established on either model: the control averaged 0.67 decoys an arm against a
+bar of 1.5 set before the first run, and the bar was not moved to fit the result.

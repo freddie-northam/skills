@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: How a skill earns its place
+    url: https://github.com/freddie-northam/skills/blob/main/docs/METHOD.md
+    about: The method, including the mistakes that produced wrong answers here.
+  - name: What did not work
+    url: https://github.com/freddie-northam/skills/blob/main/NEGATIVE-RESULTS.md
+    about: Skills that were cut, and what each one taught. Read before proposing.

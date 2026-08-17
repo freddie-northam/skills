@@ -26,15 +26,28 @@ rule so a diff, a transcript, or a grep can catch a violation.
 ## The shape of a contribution
 
 ```
-skills/<name>/
-  SKILL.md          the skill
-  BASELINE.md       the experiment and its limits
-  fixture/
-    README.md       what is planted, and how it is scored
-    check.sh        the oracle
-    workspace/      the only part an agent ever sees
-  bin/              a tool the skill invokes, if it needs one
+skills/<name>/        installed on a user's machine
+  SKILL.md            the skill
+  BASELINE.md         the experiment and its limits
+  bin/                a tool the skill invokes, if it needs one
+
+experiments/<name>/   never installed
+  README.md           what is planted, and how it is scored
+  check.sh            the oracle
+  task.txt            the task both arms receive
+  workspace/          the only part an agent ever sees
 ```
+
+**The split is not tidiness.** An installer copies the whole of
+`skills/<name>/` into the directory an agent reads its instructions from.
+A fixture holds prompt-injection payloads, fake credentials and deliberately
+broken code, and it exists to tempt an agent into misbehaving. Shipping it next
+to the skill puts the bait inside the agent's own skill folder. So a fixture
+lives in `experiments/`, and only `SKILL.md`, `BASELINE.md` and `bin/` install.
+
+`bin/` is the exception because a skill may invoke it at run time.
+`sweep-tests` tells the agent to run `<skill-dir>/bin/mutate.mjs`, so that tool
+has to travel with the skill.
 
 `workspace/` is copied into a run. Nothing else is. An agent that reads your
 fixture's README knows it is being tested, and the run is void. That has already
