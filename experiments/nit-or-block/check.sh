@@ -45,9 +45,12 @@ fi
 # is where a review names the file and the function. A body legitimately names
 # other code while it explains itself, and a section-wide grep counts that as a
 # separate finding.
+# Eight lines, not four. Measured: `cla-skl-1` opened its item with the trace
+# that proves the fault and named the consequence on line six. A four-line
+# window called that a miss, and reading the file says it is not.
 SUBJECTS=$(echo "$MUST" | awk '
   /^###/ { n = 0 }
-  /^###/ || n < 4 { if ($0 ~ /[^[:space:]]/) { print; n++ } }
+  /^###/ || n < 8 { if ($0 ~ /[^[:space:]]/) { print; n++ } }
 ')
 
 hit() { echo "$SUBJECTS" | grep -qiE "$1"; }
@@ -58,7 +61,7 @@ FOUND=0; FLIST=""
 # written back. Only visible against the guard 20 lines above, outside the hunk.
 # A bare `grace` would also credit "the window needs a test", which a reviewer
 # writes from the hunk alone. The mechanism is the thing that needs the file.
-if hit 'short.?circuit|dead code|unreachable|never (reach|run|execute|writ|updat|increment|renew)|always true|window.*(always|every)|(always|every).*(true|taken)|before.*(the lock|renew)|skips? the (lock|renewal|renew)|refresh.*(no longer|stops|skips)'; then
+if hit 'short.?circuit|dead code|unreachable|no-?op|never (reach|run|let|execute|writ|updat|increment|renew)|always true|always .{0,12}(<=|true)|bypass|leaves the record unchanged|record unchanged|window.*(always|every)|(always|every).*(true|taken)|before.*(the lock|renew)|skips? the (lock|renewal|renew)|refresh.*(no longer|stops|skips)'; then
   FOUND=$((FOUND+1)); FLIST="$FLIST R1(grace-window)"
 fi
 # R2 both new writers call put() with no lock, while every other writer in the

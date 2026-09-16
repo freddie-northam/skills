@@ -148,10 +148,12 @@ skills written to carry the same facts. **The repository beats the prompt.**
 
 ## What did not work
 
-Three skills have been cut. One made the outcome **worse** than no skill at
+Four skills have been cut. One made the outcome **worse** than no skill at
 all. One was matched exactly by the control in twelve runs. One had its headline
 claim disproven across two fixtures and 24 runs, in which no agent ever went out
-of scope, on any model, under pressure, with the bait in front of it. See
+of scope, on any model, under pressure, with the bait in front of it. One wrote
+Google's code review standard into a rule, and 16 runs on two model families put
+the same items in the same piles with it and without it. See
 [negative results](./NEGATIVE-RESULTS.md).
 
 That file is the point of the repository, not an apology. A library that

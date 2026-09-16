@@ -1,5 +1,9 @@
 # Fixture: a change with three faults and two temptations
 
+The skill this fixture tested is `SKILL.md` in this directory. It lost, so it
+sits here rather than in `skills/`, where an installer would reach it. The
+numbers are in `BASELINE.md`, and the account is in `NEGATIVE-RESULTS.md`.
+
 `workspace/` is a small session service, with a change already applied to it and
 the same change in `change.diff`. The workspace is the only part a run sees.
 This file and `check.sh` stay outside it.

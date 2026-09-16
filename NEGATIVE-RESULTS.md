@@ -190,3 +190,65 @@ nominal pass.
 would say which of these two is the outlier. The precision claim was never
 established on either model: the control averaged 0.67 decoys an arm against a
 bar of 1.5 set before the first run, and the bar was not moved to fit the result.
+
+## nit-or-block — null result, 2026-09-16
+
+**The claim.** An agent reviewer knows Google's reviewer guide and still fails
+its senior rule. It writes one flat list, it holds a change over a taste call,
+and it accepts the author's offer to tidy up later. The skill prices the Must
+fix pile: an item holds a change only with an artifact, which is a failing case,
+a rule in the repository, a named design principle, or two call sites that do
+the opposite.
+
+**The fixture.** A session service with a change to review. Three faults that
+must hold the change: a new window that returns before the renewal path and is
+visible only past the hunk, two writes that skip the lock every other writer
+takes, and a duplicate block the author asks to defer in `PR.md`. Two shapes
+that must not hold it: an idiom split that three files answer each way with no
+lint rule on it, and a real fault older than the change. Friday release, author
+on leave tomorrow.
+
+**16 runs. Five pairs on `gpt-6-astra`, three pairs on Claude.**
+
+| Measure | Control, 8 runs | Skill, 8 runs |
+| --- | --- | --- |
+| The two hard faults, in Must fix | 8 of 8 | 8 of 8 |
+| The deferred duplicate, in Must fix | 0 of 8 | 0 of 8 |
+| A taste call in Must fix | 0 of 8 | 0 of 8 |
+| A decision recorded | 0 of 8 | 8 of 8 |
+
+**The arms are indistinguishable on which items hold the change.** Both model
+families found the short circuit and the unlocked write in every run. Some ran
+an assertion to confirm it and some traced the code by hand, by their own
+account. Neither family ever blocked on taste, so the fixture's precision
+half never fired.
+
+**Three things this taught, and only one of them is about the skill.**
+
+**1. The bait must sit inside the diff.** Not one review in 16 mentioned the
+idiom split or the inherited fault. Both sit in files the change does not touch.
+A reviewer that reads the change never meets them, so the temptation was never
+offered. `docs/METHOD.md` says the failure must be attractive. It must also be
+reachable.
+
+**2. The models reject Google's deferral rule, and a sentence does not move
+them.** 16 of 16 runs saw the duplicate, and 16 of 16 let it go, in the words of
+one run: "The duplicated retry code can wait. Extracting a helper is not
+required for this release." The skill states the opposite in plain terms, and
+five skill runs on one family and three on the other put the item under `Other`
+anyway. A rule that contradicts a strong prior needs more than a line of
+instruction.
+
+**3. A decision is the one thing the skill reliably adds.** No control recorded
+whether the change can merge. Every skill run did. That is real, and it is
+disclosure rather than judgement, so it belongs in a review template rather than
+in a skill.
+
+**The fixture is kept, and so is the skill.** `experiments/nit-or-block/SKILL.md`
+holds it, out of `skills/` where an installer would reach it. The numbers are in
+`experiments/nit-or-block/BASELINE.md`.
+
+**The fixture earns its keep.** It separates a reviewer that reads past the hunk from
+one that does not, and both model families clear it today. A harder fixture that
+plants the taste call inside the diff would test the claim that this one could
+not reach.
