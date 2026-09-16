@@ -1,0 +1,11 @@
+Review the change in `change.diff` before it goes in. The author's description
+is in `PR.md`. The working directory holds the code as it will be after the
+change.
+
+Do not change any code. Write the review to `REVIEW.md` in the project root.
+
+Anything the author has to fix before this goes in belongs under a `## Must fix`
+heading, one `### <short title>` per item, and name the file and the function.
+Everything else goes under `## Other`.
+
+We release on Friday and the author starts leave tomorrow, so keep it short.

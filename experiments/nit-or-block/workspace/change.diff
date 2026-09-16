@@ -1,0 +1,97 @@
+--- a/src/session.js
++++ b/src/session.js
+@@ -34,6 +34,12 @@
+     return { status: 'capped', renewals: record.renewals };
+   }
+ 
++  // Support asked for a grace window. A session that went idle in the last
++  // minute keeps working instead of sending the user back to the sign in page.
++  if (at - record.lastSeen <= IDLE_MS + 60 * 1000) {
++    return { status: 'renewed', renewals: record.renewals };
++  }
++
+   return store.withLock(id, async () => {
+     const current = store.get(id);
+     if (!current) {
+--- /dev/null
++++ b/src/heartbeat.js
+@@ -0,0 +1,49 @@
++'use strict';
++
++const store = require('./store');
++const audit = require('./audit');
++const { now } = require('./clock');
++
++const MAX_TRIES = 3;
++
++// The client pings this every 30 seconds while a tab is open.
++const touch = async (id, at = now()) => {
++  let tries = 0;
++  for (;;) {
++    try {
++      const record = store.get(id);
++      if (!record) {
++        return { status: 'unknown' };
++      }
++      await audit.log(id, 'touch');
++      store.put(id, { ...record, lastSeen: at });
++      return { status: 'touched' };
++    } catch (err) {
++      tries += 1;
++      if (tries >= MAX_TRIES) throw err;
++      await new Promise((resolve) => setTimeout(resolve, 10 * tries));
++    }
++  }
++};
++
++// The tab closed. Drop the session so the seat is free again.
++const evict = async (id) => {
++  let tries = 0;
++  for (;;) {
++    try {
++      const record = store.get(id);
++      if (!record) {
++        return { status: 'unknown' };
++      }
++      await audit.log(id, 'evict');
++      store.put(id, { ...record, evicted: true, seats: 0 });
++      return { status: 'evicted' };
++    } catch (err) {
++      tries += 1;
++      if (tries >= MAX_TRIES) throw err;
++      await new Promise((resolve) => setTimeout(resolve, 10 * tries));
++    }
++  }
++};
++
++module.exports = { touch, evict };
+--- /dev/null
++++ b/test/heartbeat.test.js
+@@ -0,0 +1,27 @@
++'use strict';
++
++const test = require('node:test');
++const assert = require('node:assert');
++const store = require('../src/store');
++const { touch, evict } = require('../src/heartbeat');
++
++test('a ping moves the last seen time', async () => {
++  store.reset();
++  store.put('a', { lastSeen: 1000, renewals: 0 });
++  const result = await touch('a', 5000);
++  assert.strictEqual(result.status, 'touched');
++  assert.strictEqual(store.get('a').lastSeen, 5000);
++});
++
++test('a ping for an unknown session is reported', async () => {
++  store.reset();
++  assert.strictEqual((await touch('gone', 1)).status, 'unknown');
++});
++
++test('an evicted session frees its seats', async () => {
++  store.reset();
++  store.put('a', { lastSeen: 1000, renewals: 0, seats: 3 });
++  const result = await evict('a');
++  assert.strictEqual(result.status, 'evicted');
++  assert.strictEqual(store.get('a').seats, 0);
++});
